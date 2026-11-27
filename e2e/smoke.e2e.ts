@@ -17,7 +17,8 @@ test("loads clean, stays inside the viewport and is one self-contained file", as
   page.on("request", (request) => requested.push(request.url()));
 
   await page.goto("/");
-  await expect(page.locator("#app")).not.toBeEmpty();
+  // The line of settings over Light and shadow: the page's script writes it on every load.
+  await expect(page.locator("#ctx-ls")).not.toBeEmpty();
 
   const sidewaysOverflow = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,

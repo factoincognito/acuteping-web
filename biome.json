@@ -5,6 +5,7 @@
       "**",
       "!**/coverage",
       "!**/dist",
+      "!fixtures",
       "!legacy",
       "!**/node_modules",
       "!**/playwright-report",
@@ -32,5 +33,23 @@
     "indentStyle": "space",
     "indentWidth": 2,
     "lineWidth": 100
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["index.html"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "useSemanticElements": "off"
+          },
+          "complexity": {
+            "noImportantStyles": "off"
+          },
+          "style": {
+            "noDescendingSpecificity": "off"
+          }
+        }
+      }
+    }
+  ]
 }

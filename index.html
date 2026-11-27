@@ -1,13 +1,1032 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="data:," />
-    <title>Acuteping - Sonar Geometry Calculator</title>
-  </head>
-  <body>
-    <main id="app"></main>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--
+  Sonar Geometry Calculator
+  Copyright 2026 Adam Smolowicz
+  Licensed under the PolyForm Noncommercial License 1.0.0
+  https://polyformproject.org/licenses/noncommercial/1.0.0
+  Required Notice: Copyright 2026 Adam Smolowicz
+-->
+<link rel="icon" href="data:,">
+<title>Acuteping - Sonar Geometry Calculator</title>
+<style>
+html,body{margin:0}
+/* Layout: one narrow phone column; Settings on top, then collapsible sections per sonar, shared tools, math and sources */
+:root {
+  --bg: #eef2f1; --surface: #ffffff; --fg: #14201e; --muted: #56645f; --line: #c8d2cf;
+  --accent: #9a5a00; --accent-soft: #f5e7d0; --water: #2f6f86; --ground: #d9d2c3; --bad: #a8261d;
+  --c2d: #2a78d6; --cds: #eb6834;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #c98500; --s5: #d55181; --s6: #4a3aa7; --s7: #e34948; --s8: #008300;
+  --font-display: 'Barlow Semi Condensed', 'Arial Narrow', 'Helvetica Neue', sans-serif;
+  --font-body: 'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-data: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1514; --surface: #162120; --fg: #e4ebe9; --muted: #9aa9a5; --line: #2b3a37;
+    --accent: #e6a640; --accent-soft: #3a2b12; --water: #74b6cf; --ground: #3a352b; --bad: #f28b82;
+    --c2d: #3987e5; --cds: #d95926;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #9085e9; --s7: #e66767; --s8: #2e9e2e;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1514; --surface: #162120; --fg: #e4ebe9; --muted: #9aa9a5; --line: #2b3a37;
+  --accent: #e6a640; --accent-soft: #3a2b12; --water: #74b6cf; --ground: #3a352b; --bad: #f28b82;
+  --c2d: #3987e5; --cds: #d95926;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #9085e9; --s7: #e66767; --s8: #2e9e2e;
+  color-scheme: dark;
+}
+[hidden] { display: none !important; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.5; }
+.wrap { max-width: 34rem; margin: 0 auto; padding-inline: 16px; padding-block: 1.25rem 2.5rem; display: grid; gap: 0.75rem; }
+header { display: grid; gap: 0.35rem; margin-bottom: 0.25rem; }
+header h1 { font-family: var(--font-display); font-weight: 600; font-size: 1.75rem; line-height: 1.1; margin: 0; text-wrap: balance; letter-spacing: 0.01em; }
+header p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+details.sec { min-width: 0; }
+details.sec > summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: minmax(0, 1fr) 20px; gap: 0.1rem 0.75rem; align-items: center; padding: 0.8rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+details.sec > summary::-webkit-details-marker { display: none; }
+details.sec > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details.sec > summary .st { font-family: var(--font-display); font-weight: 600; font-size: 1.3rem; line-height: 1.15; }
+details.sec > summary .sd { grid-column: 1; font-size: 0.85rem; color: var(--muted); }
+details.sec > summary::after { content: ''; grid-column: 2; grid-row: 1 / span 2; justify-self: center; width: 9px; height: 9px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); margin-top: -4px; }
+details.sec[open] > summary { border-color: var(--muted); }
+details.sec[open] > summary::after { transform: rotate(-135deg); margin-top: 4px; }
+#sec-set > summary { background: var(--accent-soft); border-color: transparent; }
+.sec-body { display: grid; gap: 1rem; padding-block: 0.9rem 0.75rem; min-width: 0; }
+.ctx { margin: 0; font-size: 0.85rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 0.1rem 0.9rem; align-items: baseline; padding-inline: 0.25rem; }
+.ctx b { font-weight: 500; color: var(--fg); font-family: var(--font-data); font-size: 0.82rem; }
+.linkbtn { font: inherit; font-size: 0.85rem; background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; min-height: 32px; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; display: grid; gap: 0.9rem; min-width: 0; }
+.panel > * { min-width: 0; max-width: 100%; }
+.eyebrow { font-family: var(--font-display); font-weight: 500; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0; }
+.field { display: grid; gap: 0.3rem; }
+.field label, .field .lbl { font-weight: 500; font-size: 0.95rem; }
+.hint { margin: 0; font-size: 0.85rem; color: var(--muted); }
+.figt { margin: 0; font-size: 0.9rem; font-weight: 500; }
+.stepper { display: grid; grid-template-columns: 48px minmax(0, 1fr) 48px; align-items: stretch; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--bg); }
+.stepper button { border: 0; background: transparent; color: var(--fg); font-size: 1.4rem; font-family: var(--font-data); cursor: pointer; min-height: 48px; }
+.stepper button:active { background: var(--accent-soft); }
+.stepper .box { display: flex; align-items: center; justify-content: center; gap: 0.35rem; border-inline: 1px solid var(--line); background: var(--surface); }
+.stepper input { width: 100%; min-width: 0; border: 0; background: transparent; color: var(--fg); font-family: var(--font-data); font-size: 1.2rem; text-align: right; padding: 0.4rem 0; }
+.stepper .unit { font-family: var(--font-data); color: var(--muted); padding-right: 0.8rem; min-width: 2.6rem; }
+.stepper select { border: 0; background: transparent; color: var(--muted); font-family: var(--font-data); font-size: 0.95rem; padding-right: 0.5rem; }
+.stepper input:focus { outline: none; }
+.stepper .box:focus-within { box-shadow: inset 0 0 0 2px var(--accent); }
+button:focus-visible, select:focus-visible, input[type=checkbox]:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.err { margin: 0; font-size: 0.85rem; color: var(--bad); }
+.readout { display: grid; gap: 0.2rem; padding: 0.9rem 1rem; border-radius: 8px; background: var(--accent-soft); }
+.readout .label { font-size: 0.85rem; color: var(--muted); }
+.readout .big { font-family: var(--font-data); font-weight: 500; font-size: 2.2rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.readout .note { font-size: 0.9rem; margin: 0.2rem 0 0; }
+.compare, .results { display: grid; gap: 0.35rem; margin: 0; }
+.compare div, .results div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.1rem 1rem; font-size: 0.93rem; border-bottom: 1px dashed var(--line); padding-bottom: 0.35rem; }
+.compare div:last-child, .results div:last-child { border-bottom: 0; padding-bottom: 0; }
+.compare dt, .results dt { color: var(--muted); min-width: 0; }
+.compare dd, .results dd { margin: 0 0 0 auto; font-family: var(--font-data); font-variant-numeric: tabular-nums; white-space: normal; overflow-wrap: anywhere; text-align: right; }
+.results dd { font-weight: 500; }
+.segn { display: flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.segn button { flex: 1 1 0; min-width: 0; font: inherit; font-size: 0.88rem; border: 0; padding: 0.55rem 0.3rem; min-height: 44px; background: var(--surface); color: var(--fg); cursor: pointer; }
+.segn button + button { border-left: 1px solid var(--line); }
+.segn button[aria-pressed="true"] { background: var(--fg); color: var(--bg); font-weight: 500; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { display: flex; align-items: center; gap: 6px; font: inherit; font-size: 0.82rem; padding: 6px 10px; min-height: 36px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--fg); cursor: pointer; text-align: left; }
+.chip[aria-pressed="false"] { opacity: 0.42; }
+.chip .sw { width: 18px; flex: none; }
+.bgrp { display: grid; gap: 6px; }
+.pagebtns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 0.75rem; }
+.secbtns { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.45rem; }
+.mini { font: inherit; font-size: 0.78rem; padding: 4px 10px; min-height: 32px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--fg); cursor: pointer; }
+.mini:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.bgrp + .bgrp { margin-top: 10px; }
+.bgrp-h { font-size: 0.78rem; font-weight: 600; color: var(--muted); margin: 0; }
+.bgrp .chips { gap: 6px; }
+.tog { --c: var(--fg); display: flex; align-items: center; gap: 8px; font: inherit; font-size: 0.84rem; padding: 6px 10px 6px 8px; min-height: 40px; border-radius: 8px; cursor: pointer; text-align: left; border: 1.5px dashed var(--line); background: transparent; color: var(--muted); }
+.tog .bx { width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid var(--muted); flex: none; display: grid; place-items: center; }
+.tog .bx svg { width: 12px; height: 12px; visibility: hidden; }
+.tog .sw { width: 22px; flex: none; opacity: 0.55; }
+.tog[aria-pressed="true"] { border: 1.5px solid var(--c); background: color-mix(in srgb, var(--c) 14%, var(--surface)); color: var(--fg); font-weight: 600; }
+.tog[aria-pressed="true"] .bx { background: var(--c); border-color: var(--c); }
+.tog[aria-pressed="true"] .bx svg { visibility: visible; }
+.tog[aria-pressed="true"] .sw { opacity: 1; }
+.tog:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.selbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.selbar .cnt { margin-left: auto; font-family: var(--font-data); font-size: 0.85rem; color: var(--muted); }
+details.sub { min-width: 0; }
+details.sub > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+details.sub > summary::-webkit-details-marker { display: none; }
+details.sub > summary::after { content: ''; flex: none; width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); margin: -4px 4px 0 0; }
+details.sub[open] > summary::after { transform: rotate(-135deg); margin-top: 4px; }
+details.sub > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+details.sub > .subb { display: grid; gap: 0.9rem; margin-top: 0.9rem; min-width: 0; }
+.drawn { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 0.8rem; padding: 8px 10px; border-radius: 8px; background: var(--bg); align-items: center; }
+.drawn span { display: inline-flex; align-items: center; gap: 6px; }
+.drawn .sw { width: 18px; flex: none; }
+.drawn .none { color: var(--muted); }
+.inlsel { display: grid; gap: 10px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+.inlsel .tog { background: var(--surface); }
+.inlsel .tog[aria-pressed="true"] { background: color-mix(in srgb, var(--c) 14%, var(--surface)); }
+.linkbtn { font: inherit; font-size: 0.8rem; background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; cursor: pointer; margin-left: auto; }
+.chip .sq { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+.btn { font: inherit; font-size: 0.9rem; padding: 8px 14px; min-height: 40px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--fg); cursor: pointer; justify-self: start; }
+.btn[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+#lsb { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); }
+#lsb button + button { border-left: 0; }
+.caution { border: 1px solid var(--accent); background: var(--accent-soft); color: var(--fg); border-radius: 8px; padding: 0.7rem 0.85rem; font-size: 0.88rem; line-height: 1.45; }
+.caution .contrib { display: block; margin-top: 0.45rem; }
+.caution a, .dlg a { color: var(--accent); user-select: all; }
+.copyb { min-height: 28px; padding: 2px 8px; margin-left: 2px; vertical-align: baseline; }
+.caution strong { display: block; margin-bottom: 0.25rem; }
+.dlg { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--fg); padding: 1.1rem 1.1rem 1rem; width: min(420px, calc(100vw - 32px)); box-sizing: border-box; }
+.dlg::backdrop { background: rgba(0, 0, 0, 0.45); }
+.dlg form { display: grid; gap: 0.7rem; margin: 0; }
+.dlg p { margin: 0; font-size: 0.92rem; line-height: 1.45; }
+.dlg .dlg-h { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; }
+.dlg-b { display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; margin-top: 0.3rem; }
+.dlg-ok { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+details.sub > summary .lock { margin-left: auto; font-size: 0.75rem; color: var(--muted); }
+details.sub[open] > summary .lock { display: none; }
+.dtab { display: grid; gap: 0; }
+.drow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.25rem 0.75rem; padding: 0.65rem 0; border-top: 1px dashed var(--line); }
+.drow:first-child { border-top: 0; }
+.drow .dn { font-size: 0.9rem; }
+.drow .dv { font-family: var(--font-data); font-variant-numeric: tabular-nums; font-weight: 500; text-align: right; }
+.drow .ds { grid-column: 1 / -1; font-size: 0.8rem; color: var(--muted); overflow-wrap: anywhere; }
+.drow .ds a { color: var(--accent); }
+.drow .dm { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.pips { display: inline-flex; align-items: center; gap: 3px; font-size: 0.78rem; color: var(--muted); }
+.pips i { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--pc); display: inline-block; }
+.pips i.on { background: var(--pc); }
+.pips b { margin-left: 4px; color: var(--fg); font-weight: 600; }
+.inuse { font-size: 0.72rem; font-weight: 600; padding: 1px 7px; border-radius: 10px; background: var(--accent-soft); color: var(--fg); border: 1px solid var(--accent); margin-left: 6px; vertical-align: middle; }
+.dlg { max-height: calc(100vh - 32px); overflow: auto; margin-top: 0; top: 16px; bottom: auto; }
+.dspfig { margin: 0; display: grid; gap: 0.35rem; font-size: 0.86rem; background: var(--bg); border-radius: 8px; padding: 0.6rem 0.75rem; }
+.dspfig div { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 0.5rem; }
+.dspfig dt { color: var(--muted); }
+.dspfig dd { margin: 0; overflow-wrap: anywhere; }
+.dspfig a { color: var(--accent); }
+.dsp-acts { display: flex; flex-wrap: wrap; gap: 8px; }
+.dsp-acts .btn, .dlg .dsp-acts a.btn { text-decoration: none; display: inline-flex; align-items: center; color: var(--fg); user-select: none; }
+.qm { font: inherit; font-size: 0.75rem; font-weight: 700; width: 22px; height: 22px; min-height: 0; padding: 0; margin-left: 6px; border-radius: 50%; border: 1.5px solid var(--accent); background: transparent; color: var(--accent); cursor: pointer; vertical-align: middle; line-height: 1; display: inline-grid; place-items: center; }
+.qm:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#help-fig svg { background: var(--bg); border-radius: 8px; }
+ul.plain { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.5rem; font-size: 0.9rem; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.85rem; }
+.legend span { display: flex; align-items: center; gap: 8px; }
+.legend i { width: 26px; display: inline-block; border-top: 2.5px solid var(--fg); }
+svg.fig { width: 100%; height: auto; display: block; }
+canvas.scr { width: 100%; height: auto; display: block; border-radius: 6px; image-rendering: pixelated; background: #06101c; }
+canvas.bv { width: 100%; height: auto; display: block; }
+.tbl { overflow-x: auto; }
+.tbl table { width: 100%; border-collapse: collapse; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+.tbl th { text-align: left; padding: 5px 4px; border-bottom: 1px solid var(--line); color: var(--muted); font-weight: 500; vertical-align: bottom; }
+.tbl td { padding: 5px 4px; border-bottom: 1px dashed var(--line); vertical-align: top; }
+.tbl td.n { font-family: var(--font-data); }
+
+.chk { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 0 0.65rem; align-items: start; padding: 0.55rem 0; border-bottom: 1px dashed var(--line); cursor: pointer; }
+.chk:last-child { border-bottom: 0; }
+.chk input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--accent); }
+.chk span { font-weight: 500; }
+.chk small { grid-column: 2; color: var(--muted); font-size: 0.82rem; }
+.sel { width: 100%; max-width: 100%; min-width: 0; text-overflow: ellipsis; font: inherit; font-size: 0.95rem; padding: 0.5rem 0.6rem; min-height: 44px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--fg); }
+.agrp { display: grid; gap: 0; border-top: 1px solid var(--line); padding-top: 0.5rem; }
+.agrp h3 { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; margin: 0 0 0.1rem; letter-spacing: 0.01em; }
+.arow { display: grid; grid-template-columns: minmax(0, 1fr) 6.4rem; gap: 0.15rem 0.75rem; align-items: center; padding: 0.45rem 0; border-bottom: 1px dashed var(--line); }
+.arow:last-of-type { border-bottom: 0; }
+.arow label { font-size: 0.92rem; }
+.arow .src { grid-column: 1 / -1; margin: 0; font-size: 0.78rem; color: var(--muted); }
+.arow .src.mod { color: var(--accent); }
+.ain { display: flex; align-items: center; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+.ain input { width: 100%; min-width: 0; border: 0; background: transparent; color: var(--fg); font-family: var(--font-data); font-size: 1rem; text-align: right; padding: 0.4rem 0.2rem 0.4rem 0.4rem; min-height: 40px; }
+.ain input:focus { outline: none; }
+.ain:focus-within { box-shadow: inset 0 0 0 2px var(--accent); }
+.ain span { font-family: var(--font-data); color: var(--muted); padding-right: 0.5rem; }
+.mathp { margin: 0; font-size: 0.9rem; }
+footer a { color: var(--accent); }
+footer { font-size: 0.8rem; color: var(--muted); display: grid; gap: 0.4rem; padding-inline: 0.25rem; margin-top: 0.5rem; }
+footer p, footer ul { margin: 0; max-width: 65ch; }
+footer ul { padding-left: 1.1rem; display: grid; gap: 0.2rem; }
+footer b { color: var(--fg); font-weight: 500; }
+@media (prefers-reduced-motion: no-preference) { details.sec > summary::after { transition: transform 0.15s; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>Sonar Geometry Calculator</h1>
+    <p>Side imaging, down imaging, 2D and live sonar geometry in one place. Pick your transducers, depth and beam angles once in Settings; every section uses them.</p>
+    <div class="pagebtns"><button type="button" class="btn" data-all="0">Collapse all</button><button type="button" class="btn" data-all="1">Expand all</button></div>
+  </header>
+
+  <dialog id="ang-dlg" class="dlg" aria-labelledby="ang-dlg-h">
+    <form method="dialog">
+      <p class="dlg-h" id="ang-dlg-h">Open the beam angles?</p>
+      <p>Only change these if you know what you are doing and why. Picking your transducers fills in the right figures; a wrong angle here quietly makes every distance, footprint and drawing on the page wrong, with nothing to tell you so.</p>
+      <p>Change a figure only when you have a better source, such as a manufacturer's spec or your own measurement on the water. The live sonar mount angles are not in here; set those under Sonars on your boat.</p>
+      <p>Have verifiable figures that differ from the ones here? Please email them to <a href="mailto:sonar@sugo.se?subject=Beam%20angles" target="_blank" rel="noopener" class="mail">sonar@sugo.se</a> <button type="button" class="mini copyb" data-copy="sonar@sugo.se">Copy address</button>, with links to the sources.</p>
+      <div class="dlg-b"><button type="submit" class="btn" value="cancel" autofocus>Cancel</button><button type="submit" class="btn dlg-ok" value="ok">OK, open them</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="dsp-dlg" class="dlg" aria-labelledby="dsp-dlg-h">
+    <form method="dialog">
+      <p class="dlg-h" id="dsp-dlg-h">Dispute this figure</p>
+      <dl class="dspfig">
+        <div><dt>Transducer</dt><dd id="dsp-who"></dd></div>
+        <div><dt>Figure</dt><dd id="dsp-name"></dd></div>
+        <div><dt>Value</dt><dd id="dsp-val"></dd></div>
+        <div><dt>Confidence</dt><dd id="dsp-conf"></dd></div>
+        <div><dt>Current source</dt><dd id="dsp-src"></dd></div>
+      </dl>
+      <p>Have verifiable data that says otherwise, such as a manufacturer's specification or a documented measurement? Email it to <b>sonar@sugo.se</b> with links to the sources. Figures without a verifiable source can't be changed.</p>
+      <div class="dsp-acts"><a class="btn" id="dsp-mail" href="mailto:sonar@sugo.se" target="_blank" rel="noopener">Write email</a><button type="button" class="btn" data-copy="sonar@sugo.se">Copy address</button><button type="button" class="btn" id="dsp-copy" data-copy="">Copy details</button></div>
+      <p class="hint" style="margin:0">If Write email does nothing here, copy the address and the details into an email yourself.</p>
+      <div class="dlg-b"><button type="submit" class="btn dlg-ok" value="close" autofocus>Close</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="nod-dlg" class="dlg" aria-labelledby="nod-dlg-h">
+    <form method="dialog">
+      <p class="dlg-h" id="nod-dlg-h">This one can't be disputed</p>
+      <p id="nod-what" style="font-family:var(--font-data);font-size:0.86rem"></p>
+      <p>The Other presets are placeholders for transducers that aren't in the list, so there is no source to dispute; they are rated 1/5 for that reason.</p>
+      <p>Put in your own transducer's figures instead: pick Other under Sonars on your boat in Settings, then enter the figures under Beam angles. They only change the calculator for you.</p>
+      <div class="dlg-b"><button type="submit" class="btn dlg-ok" value="close" autofocus>OK</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="help-dlg" class="dlg" aria-labelledby="help-h">
+    <form method="dialog">
+      <p class="dlg-h" id="help-h"></p>
+      <p class="hint" id="help-sub" style="margin:-0.4rem 0 0" hidden></p>
+      <div id="help-fig"></div>
+      <p id="help-x"></p>
+      <p class="hint" style="margin:0" id="help-note">Drawn with your current settings.</p>
+      <div class="dlg-b"><button type="submit" class="btn dlg-ok" value="close" autofocus>Close</button></div>
+    </form>
+  </dialog>
+
+  <!-- ============ SETTINGS ============ -->
+  <details class="sec" id="sec-set" data-sec="set">
+    <summary><span class="st">Settings</span><span class="sd">Your sonars, depth, speed, ranges and every beam angle the page uses</span><span class="secbtns"><button type="button" class="mini" data-secall="0">Collapse section</button><button type="button" class="mini" data-secall="1">Expand section</button></span></summary>
+    <div class="sec-body">
+      <section class="panel" aria-labelledby="eq-h">
+        <details class="sub" open data-sub="eq-h">
+          <summary><span class="eyebrow" id="eq-h">Sonars on your boat</span></summary>
+          <div class="subb">
+        <p class="hint">Pick your transducers and tick the sonars you use. Only the sections, beams and formulas for what you tick are shown, and they use your brand's names.</p>
+        <div class="field">
+          <label for="img-p">Imaging transducer (2D, down and side imaging)</label>
+          <select id="img-p" class="sel" data-save></select>
+        </div>
+        <div class="field" id="img-s-f">
+          <label for="img-s">Second imaging transducer (optional, same brand)</label>
+          <select id="img-s" class="sel" data-save></select>
+          <p class="hint">Adds the frequencies the second transducer has and the first doesn't, for example 800 kHz SideScan from a Recon nosecone. Live sonar choices are limited to the same brand.</p>
+        </div>
+        <div>
+          <label class="chk"><input type="checkbox" id="eq-ss" data-save checked><span data-n="side">SideScan</span><small>Side imaging, from the imaging transducer</small></label>
+          <label class="chk"><input type="checkbox" id="eq-ds" data-save checked><span data-n="down">DownScan</span><small>Down imaging, from the imaging transducer</small></label>
+          <label class="chk"><input type="checkbox" id="eq-2d" data-save checked><span>2D sonar</span><small>Traditional sonar, from the imaging transducer</small></label>
+          <label class="chk"><input type="checkbox" id="eq-at" data-save checked><span data-n="live">ActiveTarget 2</span><small>Live sonar: Forward, Down and <span data-n="flat">Scout</span></small></label>
+        </div>
+        <div class="field" data-eq="at">
+          <label for="live-p">Live sonar transducer</label>
+          <select id="live-p" class="sel" data-save></select>
+        </div>
+        <div class="field" data-eq="dual">
+          <label for="at-n">How many <span data-n="live">ActiveTarget 2</span> transducers</label>
+          <select id="at-n" class="sel" data-save><option value="1">One</option><option value="2" id="at-n2" selected>Two, for Scout Wide</option></select>
+        </div>
+        <div class="field" data-eq="at">
+          <label for="atsb"><span data-n="flat">Scout</span> beam center, below horizontal</label>
+          <div class="stepper"><button type="button" data-for="atsb" data-step="-1" aria-label="Decrease Scout mount angle">−</button><div class="box"><input id="atsb" type="text" inputmode="decimal" autocomplete="off" value="20" data-save><span class="unit">°</span></div><button type="button" data-for="atsb" data-step="1" aria-label="Increase Scout mount angle">+</button></div>
+        </div>
+        <div class="field" data-eq="at">
+          <label for="atfa">Forward fan center, below horizontal</label>
+          <div class="stepper"><button type="button" data-for="atfa" data-step="-1" aria-label="Decrease Forward mount angle">−</button><div class="box"><input id="atfa" type="text" inputmode="decimal" autocomplete="off" value="45" data-save><span class="unit">°</span></div><button type="button" data-for="atfa" data-step="1" aria-label="Increase Forward mount angle">+</button></div>
+          <p class="hint">How your live sonar transducer is tilted on its mount, measured to the center of the beam, not its edge. 20° and 45° are only examples; set them to your boat. <span data-n="flat">Scout</span> and Forward use these in every section.</p>
+          <p class="err" id="mnt-err" hidden></p>
+        </div>
+        <p class="err" id="eq-err" hidden></p>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel" aria-labelledby="cond-h">
+        <details class="sub" open data-sub="cond-h">
+          <summary><span class="eyebrow" id="cond-h">On the water</span></summary>
+          <div class="subb">
+        <div class="field">
+          <label for="dep">Depth under the transducer</label>
+          <div class="stepper"><button type="button" data-for="dep" data-step="-0.5" aria-label="Decrease depth">−</button><div class="box"><input id="dep" type="text" inputmode="decimal" autocomplete="off" value="10" data-save><span class="unit">m</span></div><button type="button" data-for="dep" data-step="0.5" aria-label="Increase depth">+</button></div>
+          <p class="hint">The bottom depth below the transducer face, used by every section. If your display's depth is offset to the surface or the keel, remove the offset first.</p>
+          <p class="err" id="dep-err" hidden></p>
+        </div>
+        <div class="field">
+          <label for="sog">Speed over ground (SOG)</label>
+          <div class="stepper"><button type="button" data-for="sog" data-step="-0.5" aria-label="Decrease speed">−</button><div class="box"><input id="sog" type="text" inputmode="decimal" autocomplete="off" value="2" data-save><select id="sogu" aria-label="Speed unit" data-save><option value="kmh">km/h</option><option value="kn" selected>kn</option></select></div><button type="button" data-for="sog" data-step="0.5" aria-label="Increase speed">+</button></div>
+          <p class="hint">Used for fish arches, the simulated 2D and <span data-n="down">DownScan</span> screens, and distance behind the boat.</p>
+          <p class="err" id="sog-err" hidden></p>
+        </div>
+        <div class="field" data-eq="ss">
+          <label for="ssr"><span data-n="side">SideScan</span> range per side</label>
+          <div class="stepper"><button type="button" data-for="ssr" data-step="-5" aria-label="Decrease SideScan range">−</button><div class="box"><input id="ssr" type="text" inputmode="decimal" autocomplete="off" value="40" data-save><span class="unit">m</span></div><button type="button" data-for="ssr" data-step="5" aria-label="Increase SideScan range">+</button></div>
+          <p class="err" id="ssr-err" hidden></p>
+        </div>
+        <div class="field" data-eq="at">
+          <label for="atr">Live sonar range</label>
+          <div class="stepper"><button type="button" data-for="atr" data-step="-5" aria-label="Decrease ActiveTarget range">−</button><div class="box"><input id="atr" type="text" inputmode="decimal" autocomplete="off" value="30" data-save><span class="unit">m</span></div><button type="button" data-for="atr" data-step="5" aria-label="Increase ActiveTarget range">+</button></div>
+          <p class="err" id="atr-err" hidden></p>
+        </div>
+        <div class="field" data-eq="at">
+          <label for="zt">Live sonar transducer below the surface</label>
+          <div class="stepper"><button type="button" data-for="zt" data-step="-0.1" aria-label="Decrease transducer depth">−</button><div class="box"><input id="zt" type="text" inputmode="decimal" autocomplete="off" value="0.5" data-save><span class="unit">m</span></div><button type="button" data-for="zt" data-step="0.1" aria-label="Increase transducer depth">+</button></div>
+          <p class="hint">Only used in the live sonar section, where fish depths are given below the surface.</p>
+          <p class="err" id="zt-err" hidden></p>
+        </div>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel" aria-labelledby="ang-h">
+        <details class="sub" data-sub="ang-h" data-guard>
+          <summary><span class="eyebrow" id="ang-h">Beam angles</span><span class="lock" aria-hidden="true">asks before opening</span></summary>
+          <div class="subb">
+        <div class="caution" role="note"><strong>Only change these if you know what you are doing and why.</strong> Picking your transducers above fills in the right figures. A wrong angle here quietly makes every distance, footprint and drawing on the page wrong, with nothing to tell you so. Change a figure only when you have a better source, such as a manufacturer's spec or your own measurement on the water, and use the reset button below if in doubt. The live sonar mount angles, which you are meant to set to your boat, are under Sonars on your boat. <span class="contrib">Have verifiable figures that differ from the ones here? Please email them to <a href="mailto:sonar@sugo.se?subject=Beam%20angles" target="_blank" rel="noopener" class="mail">sonar@sugo.se</a> <button type="button" class="mini copyb" data-copy="sonar@sugo.se">Copy address</button>, with links to the sources, so the presets can be corrected for everyone.</span></div>
+        <p class="hint">Each transducer you pick above fills in these figures, with where each one came from. Lowrance publishes no beam angles for its transducers. Humminbird publishes its imaging angles and its Dual Spectrum CHIRP angles, measured where the echo is 10 dB below the center (a wider figure than the common 3 dB convention). Garmin publishes LiveScope's but, as far as could be found, not ClearVü's or SideVü's. Change any value and every section follows; a source turns orange when your value differs from the preset.</p>
+        <div id="ang-img" style="display:grid;gap:0.9rem"></div>
+        <div id="ang-live" data-eq="at"></div>
+        <button type="button" class="btn" id="ang-reset">Reset beam angles to the presets</button>
+          </div>
+        </details>
+      </section>
+    </div>
+  </details>
+
+  <!-- ============ LIGHT AND SHADOW ============ -->
+  <details class="sec" id="sec-ls" data-sec="ls">
+    <summary><span class="st">Light and shadow</span><span class="sd">A generic beam as a flashlight: what it lights up, where shadows fall, and a bottom that isn't flat</span><span class="secbtns"><button type="button" class="mini" data-secall="0">Collapse section</button><button type="button" class="mini" data-secall="1">Expand section</button></span></summary>
+    <div class="sec-body">
+      <p class="ctx" id="ctx-ls"></p>
+      <section class="panel" aria-labelledby="fl-h">
+        <details class="sub" open data-sub="fl-h">
+          <summary><span class="eyebrow" id="fl-h">The flashlight picture</span></summary>
+          <div class="subb">
+        <p class="hint" style="font-size:0.9rem;color:var(--fg)">Think of the transducer as a flashlight held just under the surface in a dark room, and the screen as a photo taken by a camera that only knows <em>how far away</em> each lit thing is, not in which direction.</p>
+        <ul class="plain">
+          <li><strong>Only what the light reaches answers.</strong> A shadow on the screen is not something dark on the bottom; it is a place no sound reached, so nothing came back from there.</li>
+          <li><strong>Shadows point away from the light.</strong> The lower the light hits (farther out, or in shallower water), the longer the shadow behind anything that sticks up.</li>
+          <li><strong>A fish in midwater casts its shadow farther out on the bottom.</strong> The fish is drawn where its echo is; its shadow is drawn farther out. The gap between them grows with how high the fish is above the bottom.</li>
+          <li><strong>Slopes that face the light are brighter,</strong> slopes that face away are darker, and behind an edge that drops away steeper than the light comes in, there is a black band with nothing in it.</li>
+          <li><strong>Shine it straight down and the shadows hide under things.</strong> That is why DownScan and 2D show few shadows, and SideScan, with its light coming in low, shows long ones.</li>
+          <li><strong>Everything is placed by distance from the light.</strong> Two things at the same distance land on the same spot on the screen, even if one is up in the water and the other on the bottom.</li>
+        </ul>
+        <p class="hint">Every other calculation on this page assumes a flat bottom. The card below lets you change the bottom and see what changes.</p>
+          </div>
+        </details>
+      </section>
+      <section class="panel" aria-labelledby="lsd-h">
+        <details class="sub" open data-sub="lsd-h">
+          <summary><span class="eyebrow" id="lsd-h">Beam, bottom and shadows</span></summary>
+          <div class="subb">
+        <div class="field">
+          <span class="lbl" id="lsb-l">Bottom</span>
+          <div class="segn" id="lsb" role="group" aria-labelledby="lsb-l"><button type="button" data-v="flat">Flat</button><button type="button" data-v="rock">Rock</button><button type="button" data-v="up">Rising</button><button type="button" data-v="down">Falling</button><button type="button" data-v="drop">Drop-off</button><button type="button" data-v="wave">Undulating</button></div>
+        </div>
+        <div class="field">
+          <span class="lbl" id="lsa-l">Light comes in</span>
+          <div class="segn" id="lsa" role="group" aria-labelledby="lsa-l"><button type="button" data-v="low">Low, like SideScan</button><button type="button" data-v="steep">Steep, like DownScan</button></div>
+        </div>
+        <div class="field">
+          <label for="lsfx">Fish, distance out</label>
+          <div class="stepper"><button type="button" data-for="lsfx" data-step="-1" aria-label="Decrease fish distance">−</button><div class="box"><input id="lsfx" type="text" inputmode="decimal" autocomplete="off" value="12" data-save><span class="unit">m</span></div><button type="button" data-for="lsfx" data-step="1" aria-label="Increase fish distance">+</button></div>
+        </div>
+        <div class="field">
+          <label for="lsfh">Fish, height above the bottom</label>
+          <div class="stepper"><button type="button" data-for="lsfh" data-step="-0.5" aria-label="Decrease fish height">−</button><div class="box"><input id="lsfh" type="text" inputmode="decimal" autocomplete="off" value="3" data-save><span class="unit">m</span></div><button type="button" data-for="lsfh" data-step="0.5" aria-label="Increase fish height">+</button></div>
+        </div>
+        <p class="err" id="ls-err" hidden></p>
+        <p class="figt">Cut through the beam, seen from the side</p>
+        <svg class="fig" id="ls-svg" viewBox="0 0 340 220" role="img" aria-label="A beam lighting the bottom, with the shadows cast by a fish and the bottom's shape"></svg>
+        <div class="legend" id="ls-leg"></div>
+        <p class="figt">What one ping draws on the screen, by distance from the transducer</p>
+        <svg class="fig" id="ls-scr" viewBox="0 0 340 94" role="img" aria-label="Echo strength along one ping, from the transducer outwards"></svg>
+        <dl class="results" id="ls-res"></dl>
+        <p class="hint">A generic beam, not a specific transducer: the low one lights from 6° to 60° below horizontal, the steep one from 55° straight down, both out to 5 × the depth. Brightness follows how squarely the sound hits the surface; real returns also depend on what the bottom is made of. The fish is 12% of the depth long, larger than life so its shadow shows, and depth is drawn 2.5 × taller than it is so the shapes don't flatten out. That makes the beam look steeper in the drawing than it is; the numbers are calculated at true scale. For reading a real shadow's size, use Read a shadow in the <span data-n="side">SideScan</span> section.</p>
+          </div>
+        </details>
+      </section>
+    </div>
+  </details>
+
+  <!-- ============ SIDESCAN ============ -->
+  <details class="sec" id="sec-ss" data-sec="ss" data-eq="ss">
+    <summary><span class="st"><span data-n="side">SideScan</span></span><span class="sd">Real distance from the screen, shadows, the beam's shape, error graphs and a simulated screen</span><span class="secbtns"><button type="button" class="mini" data-secall="0">Collapse section</button><button type="button" class="mini" data-secall="1">Expand section</button></span></summary>
+    <div class="sec-body">
+      <p class="ctx" id="ctx-ss"></p>
+      <p class="err" id="ss-serr" hidden></p>
+
+      <section class="panel" aria-labelledby="in-h">
+        <details class="sub" open data-sub="in-h">
+          <summary><span class="eyebrow" id="in-h">Reading</span></summary>
+          <div class="subb">
+        <div class="field">
+          <label for="ssR">Distance on screen</label>
+          <div class="stepper"><button type="button" data-for="ssR" data-step="-0.5" aria-label="Decrease screen distance">−</button><div class="box"><input id="ssR" type="text" inputmode="decimal" autocomplete="off" value="20" data-save><span class="unit">m</span></div><button type="button" data-for="ssR" data-step="0.5" aria-label="Increase screen distance">+</button></div>
+          <p class="err" id="ssR-err" hidden></p>
+        </div>
+        <div class="readout" aria-live="polite">
+          <span class="label" id="out-label">Horizontal distance to target on the bottom</span>
+          <span class="big" id="out-x">—</span>
+          <p class="note" id="out-note" hidden></p>
+        </div>
+        <dl class="compare" id="compare">
+          <div><dt>Screen distance as is</dt><dd id="c1"></dd></div>
+          <div><dt>Screen distance − depth</dt><dd id="c2"></dd></div>
+        </dl>
+        <svg id="sketch" class="fig" viewBox="0 0 320 172" role="img" aria-label="Cross-section of the transducer, bottom and target"></svg>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel" aria-labelledby="sh-h">
+        <details class="sub" open data-sub="sh-h">
+          <summary><span class="eyebrow" id="sh-h">Read a shadow</span></summary>
+          <div class="subb">
+        <div class="segn" id="ssmode" role="group" aria-label="Shadow type">
+          <button type="button" data-v="bottom">Object on the bottom</button>
+          <button type="button" data-v="susp">Suspended object</button>
+        </div>
+        <div id="bottom-tool" class="field" style="gap:0.9rem">
+          <p class="hint">Read where the shadow starts and ends on the screen.</p>
+          <div class="field">
+            <label for="s1">Shadow starts at</label>
+            <div class="stepper"><button type="button" data-for="s1" data-step="-0.5" aria-label="Decrease shadow start">−</button><div class="box"><input id="s1" type="text" inputmode="decimal" autocomplete="off" value="20" data-save><span class="unit">m</span></div><button type="button" data-for="s1" data-step="0.5" aria-label="Increase shadow start">+</button></div>
+          </div>
+          <div class="field">
+            <label for="s2">Shadow ends at</label>
+            <div class="stepper"><button type="button" data-for="s2" data-step="-0.5" aria-label="Decrease shadow end">−</button><div class="box"><input id="s2" type="text" inputmode="decimal" autocomplete="off" value="24" data-save><span class="unit">m</span></div><button type="button" data-for="s2" data-step="0.5" aria-label="Increase shadow end">+</button></div>
+          </div>
+          <p class="err" id="b-err" hidden></p>
+          <dl class="results" id="b-res">
+            <div><dt>Object height</dt><dd id="b-h"></dd></div>
+            <div><dt>Horizontal distance to object</dt><dd id="b-x"></dd></div>
+          </dl>
+        </div>
+        <div id="susp-tool" class="field" style="gap:0.9rem" hidden>
+          <p class="hint">Read the object's mark and where its shadow lands on the bottom.</p>
+          <div class="field">
+            <label for="ro">Object drawn at</label>
+            <div class="stepper"><button type="button" data-for="ro" data-step="-0.5" aria-label="Decrease object distance">−</button><div class="box"><input id="ro" type="text" inputmode="decimal" autocomplete="off" value="7.1" data-save><span class="unit">m</span></div><button type="button" data-for="ro" data-step="0.5" aria-label="Increase object distance">+</button></div>
+          </div>
+          <div class="field">
+            <label for="rs">Its shadow drawn at</label>
+            <div class="stepper"><button type="button" data-for="rs" data-step="-0.5" aria-label="Decrease shadow distance">−</button><div class="box"><input id="rs" type="text" inputmode="decimal" autocomplete="off" value="14.1" data-save><span class="unit">m</span></div><button type="button" data-for="rs" data-step="0.5" aria-label="Increase shadow distance">+</button></div>
+          </div>
+          <p class="err" id="s-err" hidden></p>
+          <dl class="results" id="s-res">
+            <div><dt>Depth below transducer</dt><dd id="s-d"></dd></div>
+            <div><dt>Height above bottom</dt><dd id="s-a"></dd></div>
+            <div><dt>Horizontal distance</dt><dd id="s-x"></dd></div>
+          </dl>
+        </div>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel" aria-labelledby="ssb-h">
+        <details class="sub" open data-sub="ssb-h">
+          <summary><span class="eyebrow" id="ssb-h">What the sidescan beam looks like</span></summary>
+          <div class="subb">
+        <p class="hint">The two sidescan fans seen from straight behind the boat and from straight above, as they leave the transducer and reach the bottom. Light shading is the beam in the water; dark shading is where it hits the bottom.</p>
+        <p class="hint">The boulder test: if a boulder you pass over shows on both sides right at the edge of the dark water-column band, the beams cover straight down and there is no blind gap under the boat. The default angles assume that.</p>
+        <div class="field">
+          <span class="lbl" id="ssf-l"><span data-n="side">SideScan</span> frequency</span>
+          <div class="segn" id="ssf" role="group" aria-labelledby="ssf-l">
+            <button type="button" data-v="455">455 kHz</button>
+            <button type="button" data-v="800">800 kHz</button>
+            <button type="button" data-v="1075">1075 CHIRP</button>
+          </div>
+          <p class="hint">Narrower fans are aimed as set in Settings: by default they reach straight down like the widest one, so there is no extra gap under the boat.</p>
+        </div>
+        <p class="figt">From behind</p>
+        <svg class="fig" id="ssb-back" viewBox="0 0 340 200" role="img" aria-label="Sidescan fans seen from behind the boat"></svg>
+        <p class="figt">From above</p>
+        <svg class="fig" id="ssb-top" viewBox="0 0 340 160" role="img" aria-label="Sidescan fans seen from above"></svg>
+        <dl class="results" id="ssb-res"></dl>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel" aria-labelledby="err-h">
+        <details class="sub" open data-sub="err-h">
+          <summary><span class="eyebrow" id="err-h">Shortcut error by depth</span></summary>
+          <div class="subb">
+        <p class="hint">Error of each shortcut against the true horizontal distance, for a few depths. Solid: screen distance as is (always too far). Dashed: screen distance − depth (always too short). Tap a depth to hide or show it; the scale follows.</p>
+        <div class="legend">
+          <span><i></i>Solid: horizontal ≈ screen distance</span>
+          <span><i style="border-top-style:dashed"></i>Dashed: horizontal ≈ screen distance − depth</span>
+        </div>
+        <div class="chips" id="err-chips"></div>
+        <svg class="fig" id="err-svg" viewBox="0 0 340 250" role="img" aria-label="Error of both shortcuts versus screen distance for depths 1, 3, 5, 8 and 10 m"></svg>
+        <div class="readout" style="background:var(--bg);gap:0.35rem">
+          <span class="label">How to read it: 10 m depth, object 20 m out on the screen (marked with dots)</span>
+          <dl class="compare">
+            <div><dt>x-axis = screen (slant) distance</dt><dd>20.0 m</dd></div>
+            <div><dt>Solid: 20.0 − error 2.7</dt><dd>= 17.3 m</dd></div>
+            <div><dt>Dashed: (20.0 − 10) + error 7.3</dt><dd>= 17.3 m</dd></div>
+            <div><dt>True horizontal √(20² − 10²)</dt><dd>= 17.3 m</dd></div>
+          </dl>
+          <p class="note" style="margin:0;font-size:0.85rem;color:var(--muted)">The error is the gap to the true horizontal distance, not to the screen distance. Subtract it from the solid line's value, add it to the dashed line's.</p>
+        </div>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel" aria-labelledby="rel-h">
+        <details class="sub" open data-sub="rel-h">
+          <summary><span class="eyebrow" id="rel-h">Error as a percentage of the true distance</span></summary>
+          <div class="subb">
+        <p class="hint">Relative error of each shortcut compared with the true horizontal distance. The vertical lines show where the screen distance as is (solid) gets below 10%, 5%, 2% and 1%. Pick a depth.</p>
+        <div class="legend">
+          <span><i></i>Solid: horizontal ≈ screen distance</span>
+          <span><i style="border-top-style:dashed"></i>Dashed: horizontal ≈ screen distance − depth</span>
+        </div>
+        <div class="chips" id="rel-chips"></div>
+        <svg class="fig" id="rel-svg" viewBox="0 0 340 250" role="img" aria-label="Relative error of both shortcuts versus screen distance for the chosen depth"></svg>
+        <dl class="compare" id="rel-tab"></dl>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel" aria-labelledby="sim-h">
+        <details class="sub" open data-sub="sim-h">
+          <summary><span class="eyebrow" id="sim-h">Simulated sidescan screen</span></summary>
+          <div class="subb">
+        <p class="hint" id="sim-cap"></p>
+        <canvas id="sim" width="360" height="400" role="img" aria-label="Simulated sidescan waterfall" style="width:100%;height:auto;display:block;border-radius:6px;image-rendering:pixelated;background:#0b0703"></canvas>
+        <dl class="results" id="sim-vals"></dl>
+        <p class="hint">The screen's sideways axis is slant distance, straight from the transducer. The white bar is what the screen shows; the true horizontal distance and depth are listed above, worked out from the geometry. The blue dashed lines mark where the water column band ends, at a slant distance equal to the depth.</p>
+        <p class="hint">Newest ping at the top. Boat track down the middle, port left, starboard right. Texture and brightness are illustrative; the positions and shadow lengths follow the geometry.</p>
+          </div>
+        </details>
+      </section>
+    </div>
+  </details>
+
+  <!-- ============ 2D & DOWNSCAN ============ -->
+  <details class="sec" id="sec-vs" data-sec="vs" data-eq="2d ds">
+    <summary><span class="st">2D &amp; <span data-n="down">DownScan</span></span><span class="sd">Beam coverage, off-center targets, fish arches and simulated screens</span><span class="secbtns"><button type="button" class="mini" data-secall="0">Collapse section</button><button type="button" class="mini" data-secall="1">Expand section</button></span></summary>
+    <div class="sec-body">
+      <p class="ctx" id="ctx-vs"></p>
+      <p class="err" id="vs-serr" hidden></p>
+
+      <section class="panel" aria-labelledby="cov-h">
+        <details class="sub" open data-sub="cov-h">
+          <summary><span class="eyebrow" id="cov-h">Beam coverage</span></summary>
+          <div class="subb">
+        <div class="field" data-eq="2d">
+          <span class="lbl" id="f2d-l">2D frequency</span>
+          <div class="segn" id="f2d" role="group" aria-labelledby="f2d-l"><button type="button" data-v="83">Medium CHIRP 83 kHz</button><button type="button" data-v="200">High CHIRP 200 kHz</button></div>
+        </div>
+        <div class="field" data-eq="ds">
+          <span class="lbl" id="fds-l"><span data-n="down">DownScan</span> frequency</span>
+          <div class="segn" id="fds" role="group" aria-labelledby="fds-l"><button type="button" data-v="455">455 kHz</button><button type="button" data-v="800">800 kHz</button><button type="button" data-v="1200">1200 CHIRP</button></div>
+        </div>
+        <dl class="results">
+          <div data-eq="2d"><dt>2D cone covers a circle</dt><dd id="o-cone"></dd></div>
+          <div data-eq="ds"><dt><span data-n="down">DownScan</span> fan covers a strip</dt><dd id="o-fan"></dd></div>
+        </dl>
+        <svg class="fig" id="cov-svg" viewBox="0 0 320 200" role="img" aria-label="Cross-section seen from behind the boat: the 2D cone and the DownScan fan reaching the bottom"></svg>
+        <div class="legend"><span data-eq="2d"><i style="border-top-color:var(--c2d)"></i>2D cone width</span><span data-eq="ds"><i style="border-top-color:var(--cds);border-top-style:dashed"></i><span data-n="down">DownScan</span> fan width</span></div>
+        <svg class="fig" id="cov-graph" viewBox="0 0 340 220" role="img" aria-label="Width covered on the bottom versus depth"></svg>
+        <p class="hint">Width on the bottom = 2 × depth × tan(angle ÷ 2). It grows in step with depth. Beam angles are usually measured where the echo has dropped to half power, so strong targets can still show a little outside them.</p>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel" aria-labelledby="fq-h">
+        <details class="sub" open data-sub="fq-h">
+          <summary><span class="eyebrow" id="fq-h">Frequencies and beam angles</span></summary>
+          <div class="subb">
+        <p class="hint" id="fq-note"></p>
+        <div class="tbl"><table id="fq-table"></table></div>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel" aria-labelledby="off-h">
+        <details class="sub" open data-sub="off-h">
+          <summary><span class="eyebrow" id="off-h">Off-center targets</span></summary>
+          <div class="subb">
+        <p class="hint">The screen plots the straight-line distance from the transducer as depth. A target off to the side is farther away than its real depth, so it is drawn deeper.</p>
+        <div class="field">
+          <label for="z">Target's real depth</label>
+          <div class="stepper"><button type="button" data-for="z" data-step="-0.5" aria-label="Decrease target depth">−</button><div class="box"><input id="z" type="text" inputmode="decimal" autocomplete="off" value="8" data-save><span class="unit">m</span></div><button type="button" data-for="z" data-step="0.5" aria-label="Increase target depth">+</button></div>
+        </div>
+        <div class="field">
+          <label for="x">Distance to the side of the boat</label>
+          <div class="stepper"><button type="button" data-for="x" data-step="-0.5" aria-label="Decrease side distance">−</button><div class="box"><input id="x" type="text" inputmode="decimal" autocomplete="off" value="2" data-save><span class="unit">m</span></div><button type="button" data-for="x" data-step="0.5" aria-label="Increase side distance">+</button></div>
+          <p class="err" id="off-err" hidden></p>
+        </div>
+        <div class="readout" aria-live="polite"><span class="label">Drawn on screen at</span><span class="big" id="o-shown">—</span></div>
+        <dl class="results">
+          <div><dt>Too deep by</dt><dd id="o-err"></dd></div>
+          <div><dt>Angle off straight down</dt><dd id="o-ang"></dd></div>
+          <div data-eq="2d"><dt>Inside 2D cone?</dt><dd id="o-in2d"></dd></div>
+          <div data-eq="ds"><dt>Inside <span data-n="down">DownScan</span> fan?</dt><dd id="o-inds"></dd></div>
+          <div data-eq="2d"><dt>Worst case at 2D cone edge</dt><dd id="o-max2d"></dd></div>
+          <div data-eq="ds"><dt>Worst case at <span data-n="down">DownScan</span> fan edge</dt><dd id="o-maxds"></dd></div>
+        </dl>
+        <svg class="fig" id="off-graph" viewBox="0 0 340 220" role="img" aria-label="How much too deep a target is drawn, in percent, versus its angle from straight down"></svg>
+        <p class="hint">The error depends only on the angle from straight down: drawn depth = real depth ÷ cos(angle). A narrow cone keeps it small. From the screen alone you can't tell how far to the side a target was, and <span data-n="down">DownScan</span> can't tell port from starboard.</p>
+        <p class="hint">The same effect sets the depth reading on a slope: the unit reports the first bottom echo, which comes from the nearest bottom inside the cone. Over a drop-off, that is the shallow side, not the bottom straight below.</p>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel" aria-labelledby="arch-h">
+        <details class="sub" open data-sub="arch-h">
+          <summary><span class="eyebrow" id="arch-h">A fish passing under the boat</span></summary>
+          <div class="subb">
+        <p class="hint" data-eq="2d">As the boat passes over a fish, the distance to it shrinks and then grows again. The 2D screen plots that distance over time, which draws an arch. The top of the arch is the fish's real distance.</p>
+        <div class="field">
+          <label for="zf">Fish depth</label>
+          <div class="stepper"><button type="button" data-for="zf" data-step="-0.5" aria-label="Decrease fish depth">−</button><div class="box"><input id="zf" type="text" inputmode="decimal" autocomplete="off" value="6" data-save><span class="unit">m</span></div><button type="button" data-for="zf" data-step="0.5" aria-label="Increase fish depth">+</button></div>
+        </div>
+        <div class="field">
+          <label for="y">Fish's distance to the side of your track</label>
+          <div class="stepper"><button type="button" data-for="y" data-step="-0.5" aria-label="Decrease side distance">−</button><div class="box"><input id="y" type="text" inputmode="decimal" autocomplete="off" value="0" data-save><span class="unit">m</span></div><button type="button" data-for="y" data-step="0.5" aria-label="Increase side distance">+</button></div>
+          <p class="err" id="arch-err" hidden></p>
+        </div>
+        <dl class="results" id="arch-res">
+          <div data-eq="2d"><dt>2D arch top drawn at</dt><dd id="a-top"></dd></div>
+          <div data-eq="2d"><dt>2D arch ends drawn at</dt><dd id="a-end"></dd></div>
+          <div data-eq="2d"><dt>2D arch height on screen</dt><dd id="a-h"></dd></div>
+          <div data-eq="2d"><dt>Fish in the 2D cone for</dt><dd id="a-len"></dd></div>
+          <div data-eq="ds"><dt>Fish in the <span data-n="down">DownScan</span> fan for</dt><dd id="ds-len"></dd></div>
+        </dl>
+        <p class="hint" data-eq="2d">A wider cone and a deeper fish give a taller, longer arch. A fish off to the side gives a shorter arch whose top reads too deep. A fish swimming with the boat, or a boat standing still, draws a line instead of an arch.</p>
+        <p class="hint" data-eq="ds"><span data-n="down">DownScan</span>'s fan is very thin front to back, so a fish shows as a short dash rather than an arch.</p>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel" aria-labelledby="vsim-h">
+        <details class="sub" open data-sub="vsim-h">
+          <summary><span class="eyebrow" id="vsim-h">Simulated screens</span></summary>
+          <div class="subb">
+        <div class="field">
+          <label for="scrT">Screen shows the last</label>
+          <div class="stepper"><button type="button" data-for="scrT" data-step="-5" aria-label="Decrease screen time">−</button><div class="box"><input id="scrT" type="text" inputmode="decimal" autocomplete="off" value="20" data-save><span class="unit">s</span></div><button type="button" data-for="scrT" data-step="5" aria-label="Increase screen time">+</button></div>
+          <p class="hint">How fast the picture scrolls depends on ping speed and range, so this is a setting of the simulation, not of your unit.</p>
+        </div>
+        <p class="figt" id="cap-2d" data-eq="2d">2D sonar</p>
+        <canvas class="scr" id="scr2d" width="360" height="230" role="img" aria-label="Simulated 2D sonar screen with the fish arch" data-eq="2d"></canvas>
+        <p class="figt" id="cap-ds" data-eq="ds"><span data-n="down">DownScan</span></p>
+        <canvas class="scr" id="scrds" width="360" height="230" role="img" aria-label="Simulated DownScan screen with the fish mark" data-eq="ds"></canvas>
+        <p class="hint">Newest ping on the right, history scrolls left. The fish from the card above was passed halfway across the screen, at your SOG. Depth scale on the right. Colors and textures are for looks; the positions, arch shape and bottom band follow the geometry.</p>
+          </div>
+        </details>
+      </section>
+    </div>
+  </details>
+
+  <!-- ============ ACTIVETARGET ============ -->
+  <details class="sec" id="sec-at" data-sec="at" data-eq="at">
+    <summary><span class="st"><span data-n="live">ActiveTarget 2</span></span><span class="sd">The beam slice, where targets are drawn, <span data-n="flat">Scout</span> depth limits, beam shapes and simulated screens</span><span class="secbtns"><button type="button" class="mini" data-secall="0">Collapse section</button><button type="button" class="mini" data-secall="1">Expand section</button></span></summary>
+    <div class="sec-body">
+      <p class="ctx" id="ctx-at"></p>
+      <p class="err" id="at-serr" hidden></p>
+
+      <section class="panel" aria-labelledby="bs-h">
+        <details class="sub" open data-sub="bs-h">
+          <summary><span class="eyebrow" id="bs-h">The beam slice</span></summary>
+          <div class="subb">
+        <p class="hint"><span data-n="live">ActiveTarget</span> sends a fan that is wide in one direction and thin in the other. The screen shows everything inside that thin slice as if it were flat. Anything outside the slice isn't shown at all.</p>
+        <div class="tbl"><table id="slice-table" style="font-size:0.85rem"></table></div>
+        <svg class="fig" id="slice-svg" viewBox="0 0 340 170" role="img" aria-label="Top view of the Forward slice getting thicker with distance"></svg>
+        <p class="hint">Seen from above in Forward view: the slice gets thicker with distance, 2 × distance × tan(thickness ÷ 2). A fish a few meters to the side of your aim can be outside it close in, but inside it far out.</p>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel" aria-labelledby="pos-h">
+        <details class="sub" open data-sub="pos-h">
+          <summary><span class="eyebrow" id="pos-h">Where a target is drawn in Forward and Down</span></summary>
+          <div class="subb">
+        <p class="hint">Forward and Down draw each echo at its true direction within the fan, so inside the slice the picture is to scale. A target off to the side of the slice is a little farther away than it looks, so it is drawn a little too far out along its line.</p>
+        <div class="field">
+          <label for="fx">Fish ahead of the transducer</label>
+          <div class="stepper"><button type="button" data-for="fx" data-step="-1" aria-label="Decrease distance ahead">−</button><div class="box"><input id="fx" type="text" inputmode="decimal" autocomplete="off" value="15" data-save><span class="unit">m</span></div><button type="button" data-for="fx" data-step="1" aria-label="Increase distance ahead">+</button></div>
+        </div>
+        <div class="field">
+          <label for="fz">Fish depth below the surface</label>
+          <div class="stepper"><button type="button" data-for="fz" data-step="-0.5" aria-label="Decrease fish depth">−</button><div class="box"><input id="fz" type="text" inputmode="decimal" autocomplete="off" value="5" data-save><span class="unit">m</span></div><button type="button" data-for="fz" data-step="0.5" aria-label="Increase fish depth">+</button></div>
+        </div>
+        <div class="field">
+          <label for="fy">Fish to the side of the aim line</label>
+          <div class="stepper"><button type="button" data-for="fy" data-step="-0.5" aria-label="Decrease side distance">−</button><div class="box"><input id="fy" type="text" inputmode="decimal" autocomplete="off" value="1.5" data-save><span class="unit">m</span></div><button type="button" data-for="fy" data-step="0.5" aria-label="Increase side distance">+</button></div>
+          <p class="err" id="pos-err" hidden></p>
+        </div>
+        <p class="figt">Forward view (aimed ahead)</p>
+        <dl class="results">
+          <div><dt>Inside the slice?</dt><dd id="f-in"></dd></div>
+          <div><dt>Drawn ahead</dt><dd id="f-x"></dd></div>
+          <div><dt>Drawn at depth</dt><dd id="f-z"></dd></div>
+        </dl>
+        <p class="figt">Down view (fan side to side under the transducer)</p>
+        <dl class="results">
+          <div><dt>Inside the slice?</dt><dd id="dn-in"></dd></div>
+          <div><dt>Drawn to the side</dt><dd id="dn-y"></dd></div>
+          <div><dt>Drawn at depth</dt><dd id="dn-z"></dd></div>
+        </dl>
+        <dl class="results"><div><dt>Worst case, at the slice edge</dt><dd id="edge-err"></dd></div></dl>
+        <p class="hint">In Down view the fan runs side to side, so the fish's distance ahead is what puts it outside the slice. A fish 15 m ahead is far outside a Down slice; it only shows once the boat is almost over it.</p>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel" aria-labelledby="sc-h">
+        <details class="sub" open data-sub="sc-h">
+          <summary><span class="eyebrow" id="sc-h"><span data-n="flat">Scout</span>: distance without depth</span></summary>
+          <div class="subb">
+        <p class="hint"><span data-n="flat">Scout</span> lays the fan flat and angles it down, and shows it from above. The screen distance is the straight-line distance from the transducer, as on sidescan. The screen doesn't show depth, so a mark could be anywhere in the slice's thickness at that distance.</p>
+        <div class="field">
+          <label for="sr">Distance on the <span data-n="flat">Scout</span> screen</label>
+          <div class="stepper"><button type="button" data-for="sr" data-step="-1" aria-label="Decrease screen distance">−</button><div class="box"><input id="sr" type="text" inputmode="decimal" autocomplete="off" value="20" data-save><span class="unit">m</span></div><button type="button" data-for="sr" data-step="1" aria-label="Increase screen distance">+</button></div>
+          <p class="err" id="sc-err" hidden></p>
+        </div>
+        <dl class="results">
+          <div><dt>A mark there is at a depth of</dt><dd id="sc-z"></dd></div>
+          <div><dt>and horizontally</dt><dd id="sc-x"></dd></div>
+          <div><dt>Beam starts touching the bottom at</dt><dd id="sc-b1"></dd></div>
+          <div><dt>Whole slice on the bottom from</dt><dd id="sc-b2"></dd></div>
+          <div><dt>The fish above shows in <span data-n="flat">Scout</span>?</dt><dd id="sc-f"></dd></div>
+          <div data-eq="atw"><dt>Shows in <span data-n="wide">Scout Wide</span> (two units)?</dt><dd id="sc-fw"></dd></div>
+        </dl>
+        <p class="hint" data-eq="atw"><span data-n="wide">Scout Wide</span> uses two transducers splayed apart, each with its own fan, for twice the width in total (270° with 135° fans). Each unit has the same slice and angle, so the depth limits and bottom distances above are the same; only how far around the boat you see changes.</p>
+        <p class="hint">Closer than where the beam starts touching the bottom, <span data-n="flat">Scout</span> sees only open water. Farther than where the whole slice is on the bottom, it sees only bottom, so fish near the surface out there are missed.</p>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel" aria-labelledby="bv-h">
+        <details class="sub" open data-sub="bv-h">
+          <summary><span class="eyebrow" id="bv-h">What each beam looks like</span></summary>
+          <div class="subb">
+        <p class="hint">Each mode seen from the side and from above, as it leaves the transducer and reaches the bottom. Light shading is the beam in the water; dark shading is where it hits the bottom. Both views share the same distance scale, left to right from behind the boat to ahead of it.</p>
+        <p class="figt">Forward</p>
+        <canvas class="bv" id="bvF" width="240" height="220" role="img" aria-label="Forward beam from the side and from above"></canvas>
+        <p class="hint" id="bvF-t"></p>
+        <p class="figt">Down</p>
+        <canvas class="bv" id="bvD" width="240" height="220" role="img" aria-label="Down beam from the side and from above"></canvas>
+        <p class="hint" id="bvD-t"></p>
+        <p class="figt"><span data-n="flat">Scout</span></p>
+        <canvas class="bv" id="bvS" width="240" height="220" role="img" aria-label="Scout beam from the side and from above"></canvas>
+        <p class="hint" id="bvS-t"></p>
+        <p class="figt" data-eq="atw"><span data-n="wide">Scout Wide</span> (two units)</p>
+        <canvas class="bv" id="bvW" width="240" height="220" role="img" aria-label="Scout Wide beam from the side and from above" data-eq="atw"></canvas>
+        <p class="hint" id="bvW-t" data-eq="atw"></p>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel" aria-labelledby="asim-h">
+        <details class="sub" open data-sub="asim-h">
+          <summary><span class="eyebrow" id="asim-h">Simulated screens</span></summary>
+          <div class="subb">
+        <p class="figt">Forward</p>
+        <canvas class="scr" id="scrF" width="360" height="260" role="img" aria-label="Simulated Forward view"></canvas>
+        <p class="figt">Down</p>
+        <canvas class="scr" id="scrD" width="360" height="230" role="img" aria-label="Simulated Down view"></canvas>
+        <p class="figt"><span data-n="flat">Scout</span></p>
+        <canvas class="scr" id="scrS" width="360" height="260" role="img" aria-label="Simulated Scout view"></canvas>
+        <p class="figt" data-eq="atw"><span data-n="wide">Scout Wide</span> (two units)</p>
+        <canvas class="scr" id="scrW" width="360" height="300" role="img" aria-label="Simulated Scout Wide view from two transducers" data-eq="atw"></canvas>
+        <p class="hint">Uses the fish from the cards above. Forward is drawn from horizontal to straight down; the part of the fan that points backward is left out, and the real orientation depends on the mount. Colors and texture are for looks; positions, what is inside the slice, and where <span data-n="flat">Scout</span> meets the bottom follow the geometry.</p>
+          </div>
+        </details>
+      </section>
+    </div>
+  </details>
+
+  <!-- ============ ALL BEAMS ============ -->
+  <details class="sec" id="sec-cmp" data-sec="cmp">
+    <summary><span class="st">All beams compared</span><span class="sd">Every beam from behind the boat, from above, from the side and in 3D</span><span class="secbtns"><button type="button" class="mini" data-secall="0">Collapse section</button><button type="button" class="mini" data-secall="1">Expand section</button></span></summary>
+    <div class="sec-body">
+      <p class="ctx" id="ctx-cmp"></p>
+      <p class="err" id="cmp-serr" hidden></p>
+      <section class="panel" aria-labelledby="allb-h">
+        <details class="sub" open data-sub="allb-h">
+          <summary><span class="eyebrow" id="allb-h">Beams to show</span></summary>
+          <div class="subb">
+        <p class="hint">Tap a beam to show or hide it in all the views below. Shown beams are filled and ticked; hidden ones are dashed and grey. Each view lists what it is drawing at its top; its Change button opens the same beam buttons right there in the view. All beams are drawn from the same point to compare shapes, although in reality they sit in different places (transom, trolling motor, pole). Live sonar in Down mode can be turned on its pole, so it is drawn two ways: fan across the boat and fan along the keel. Forward and <span data-n="flat">Scout</span> are drawn aimed straight ahead, tilted by the two mount angles in Settings; the two-unit view is the units splayed to either side, if you have two. The part of a Forward fan that points above horizontal is left out.</p>
+        <div class="selbar"><button type="button" class="btn" id="allb-all" data-setall="1">Select all</button><button type="button" class="btn" id="allb-none" data-setall="0">Clear all</button><span class="cnt" id="allb-cnt" data-cnt></span></div>
+        <div id="allb-chips" data-chipwrap></div>
+          </div>
+        </details>
+      </section>
+      <section class="panel" aria-labelledby="vb-h">
+        <details class="sub" open data-sub="behind">
+          <summary><span class="eyebrow" id="vb-h">From behind the boat</span></summary>
+          <div class="subb">
+          <div class="drawn" data-drawn></div>
+          <div class="inlsel" data-inlsel hidden><div class="selbar"><button type="button" class="mini" data-setall="1">Select all</button><button type="button" class="mini" data-setall="0">Clear all</button><span class="cnt" data-cnt></span></div><div data-chipwrap></div></div>
+        <svg class="fig" id="ssb-all" viewBox="0 0 340 200" role="img" aria-label="Selected beams seen from behind the boat"></svg>
+        <dl class="results" id="allb-res"></dl>
+          </div>
+        </details>
+      </section>
+      <section class="panel" aria-labelledby="fp-h">
+        <details class="sub" open data-sub="fp">
+          <summary><span class="eyebrow" id="fp-h">From above: where each beam hits the bottom</span></summary>
+          <div class="subb">
+          <div class="drawn" data-drawn></div>
+          <div class="inlsel" data-inlsel hidden><div class="selbar"><button type="button" class="mini" data-setall="1">Select all</button><button type="button" class="mini" data-setall="0">Clear all</button><span class="cnt" data-cnt></span></div><div data-chipwrap></div></div>
+        <p class="hint">The patch of a flat bottom each beam covers, boat heading up. The drawing zooms so the widest beam fills it; changing the depth changes the scale (rings and scale bar), not the shapes.</p>
+        <svg class="fig" id="fp-svg" viewBox="0 0 340 340" role="img" aria-label="Bottom footprints of the selected beams seen from above"></svg>
+        <dl class="results" id="fp-res"></dl>
+          </div>
+        </details>
+      </section>
+      <section class="panel" aria-labelledby="vs-h">
+        <details class="sub" open data-sub="side">
+          <summary><span class="eyebrow" id="vs-h">From the side</span></summary>
+          <div class="subb">
+          <div class="drawn" data-drawn></div>
+          <div class="inlsel" data-inlsel hidden><div class="selbar"><button type="button" class="mini" data-setall="1">Select all</button><button type="button" class="mini" data-setall="0">Clear all</button><span class="cnt" data-cnt></span></div><div data-chipwrap></div></div>
+        <p class="hint">Seen from the port side, bow to the right. Thin fans that run across the boat show only their front-to-back thickness here, so they look like narrow wedges. The outline is drawn around each beam's rays, so curved range limits are shown slightly simplified.</p>
+        <svg class="fig" id="side-svg" viewBox="0 0 340 200" role="img" aria-label="Selected beams seen from the side of the boat"></svg>
+        <dl class="results" id="side-res"></dl>
+          </div>
+        </details>
+      </section>
+      <section class="panel" aria-labelledby="v3-h">
+        <details class="sub" open data-sub="v3">
+          <summary><span class="eyebrow" id="v3-h">In 3D</span></summary>
+          <div class="subb">
+          <div class="drawn" data-drawn></div>
+          <div class="inlsel" data-inlsel hidden><div class="selbar"><button type="button" class="mini" data-setall="1">Select all</button><button type="button" class="mini" data-setall="0">Clear all</button><span class="cnt" data-cnt></span></div><div data-chipwrap></div></div>
+        <p class="hint">Drag to turn the picture, use + and − to zoom, or jump to a fixed view. In shallow water the beams are much wider than deep, so the picture looks flat; stretch depth exaggerates the vertical scale to show the shapes (the label at the bottom says when it is on). Each beam is drawn as a sheet through its center, with its patch on the bottom filled in; thin fans are shown without their thickness. The grey square is the bottom, the thin outline is the water surface, and the arrow points to the bow.</p>
+        <div class="chips">
+          <button type="button" class="btn" data-v3="iso">3D</button>
+          <button type="button" class="btn" data-v3="behind">Behind</button>
+          <button type="button" class="btn" data-v3="above">Above</button>
+          <button type="button" class="btn" data-v3="side">Side</button>
+          <button type="button" class="btn" data-v3="in" aria-label="Zoom in">+</button>
+          <button type="button" class="btn" data-v3="out" aria-label="Zoom out">−</button>
+          <button type="button" class="btn" data-v3="zx">Stretch depth ×2</button>
+        </div>
+        <canvas id="b3d" width="680" height="560" role="img" aria-label="Selected beams in 3D; drag to rotate" style="width:100%;height:auto;display:block;touch-action:none;cursor:grab;border-radius:8px;background:var(--bg)"></canvas>
+          </div>
+        </details>
+      </section>
+    </div>
+  </details>
+
+  <!-- ============ DISTANCE BEHIND ============ -->
+  <details class="sec" id="sec-db" data-sec="db" data-eq="ss 2d ds">
+    <summary><span class="st">Distance behind the boat</span><span class="sd">How far back you passed an echo, from your speed and how fast the screen scrolls</span><span class="secbtns"><button type="button" class="mini" data-secall="0">Collapse section</button><button type="button" class="mini" data-secall="1">Expand section</button></span></summary>
+    <div class="sec-body">
+      <p class="ctx" id="ctx-db"></p>
+      <section class="panel" aria-labelledby="db-h">
+        <details class="sub" open data-sub="db-h">
+          <summary><span class="eyebrow" id="db-h">Distance behind the boat</span></summary>
+          <div class="subb">
+        <p class="hint">Only valid while you hold a steady speed and a straight course, and only for things that stay put.</p>
+        <div class="field">
+          <span class="lbl" id="dbt-l">Screen</span>
+          <div class="segn" id="dbt" role="group" aria-labelledby="dbt-l"><button type="button" data-v="ss" data-eq="ss"><span data-n="side">SideScan</span></button><button type="button" data-v="vs" data-eq="2d ds">2D or <span data-n="down">DownScan</span></button></div>
+        </div>
+        <div class="field">
+          <label for="tscr">Time for a mark to cross the whole screen</label>
+          <div class="stepper"><button type="button" data-for="tscr" data-step="-1" aria-label="Decrease crossing time">−</button><div class="box"><input id="tscr" type="text" inputmode="decimal" autocomplete="off" value="20" data-save><span class="unit">s</span></div><button type="button" data-for="tscr" data-step="1" aria-label="Increase crossing time">+</button></div>
+          <div class="chips" style="align-items:center">
+            <button type="button" class="btn" id="sw-btn" aria-pressed="false">Start stopwatch</button>
+            <span id="sw-out" class="hint" style="font-family:var(--font-data)"></span>
+          </div>
+          <p class="hint" id="sw-hint"></p>
+        </div>
+        <div class="field">
+          <label for="frac" id="frac-l">Echo's distance from the top edge</label>
+          <div class="stepper"><button type="button" data-for="frac" data-step="-5" aria-label="Decrease position">−</button><div class="box"><input id="frac" type="text" inputmode="decimal" autocomplete="off" value="50" data-save><span class="unit">%</span></div><button type="button" data-for="frac" data-step="5" aria-label="Increase position">+</button></div>
+          <p class="hint" id="frac-hint"></p>
+          <p class="err" id="db-err" hidden></p>
+        </div>
+        <div class="readout" aria-live="polite"><span class="label">Passed about</span><span class="big" id="db-out">—</span></div>
+        <dl class="results"><div><dt>Pinged</dt><dd id="db-t"></dd></div><div><dt>Speed</dt><dd id="db-v"></dd></div></dl>
+          </div>
+        </details>
+      </section>
+    </div>
+  </details>
+
+  <!-- ============ DATA AND SOURCES ============ -->
+  <details class="sec" id="sec-data" data-sec="data">
+    <summary><span class="st">Data and sources</span><span class="sd">Every preset figure, where it comes from and how much to trust it</span><span class="secbtns"><button type="button" class="mini" data-secall="0">Collapse section</button><button type="button" class="mini" data-secall="1">Expand section</button></span></summary>
+    <div class="sec-body">
+      <section class="panel" aria-labelledby="cf-h">
+        <details class="sub" open data-sub="cf-h">
+          <summary><span class="eyebrow" id="cf-h">Confidence levels</span></summary>
+          <div class="subb">
+        <p class="hint" style="color:var(--fg)">Each figure the presets fill in is rated from 1 to 5. Sources were checked on <span data-ck></span>; pages change, so a figure checked then may have moved since.</p>
+        <dl class="results" id="cf-scale"></dl>
+        <p class="hint">Transducers you have picked in Settings are marked <b>in use</b>. Tap <b>Dispute</b> next to a figure if you have verifiable data that says otherwise.</p>
+          </div>
+        </details>
+      </section>
+      <div id="data-list" style="display:grid;gap:1rem"></div>
+    </div>
+  </details>
+
+  <!-- ============ MATH ============ -->
+  <details class="sec" id="sec-math" data-sec="math">
+    <summary><span class="st">The math</span><span class="sd">The formulas behind every section</span><span class="secbtns"><button type="button" class="mini" data-secall="0">Collapse section</button><button type="button" class="mini" data-secall="1">Expand section</button></span></summary>
+    <div class="sec-body">
+      <section class="panel" aria-labelledby="m-ss" data-eq="ss">
+        <details class="sub" open data-sub="m-ss">
+          <summary><span class="eyebrow" id="m-ss"><span data-n="side">SideScan</span></span></summary>
+          <div class="subb">
+        <p class="mathp">x = distance on the screen (slant), d = depth under the transducer, valid for x ≥ d. The true horizontal distance is √(x² − d²).</p>
+        <dl class="compare">
+          <div><dt>Solid error (screen as is)</dt><dd>x − √(x² − d²)</dd></div>
+          <div><dt>Dashed error (screen − depth)</dt><dd>√(x² − d²) − (x − d)</dd></div>
+          <div><dt>Sum of the two errors</dt><dd>= d, for every x</dd></div>
+          <div><dt>Curves cross at</dt><dd>x = 1.25 d, both = d/2</dd></div>
+          <div><dt>Solid error far out</dt><dd>≈ d² / (2x)</dd></div>
+          <div><dt>Object height from its shadow</dt><dd>d · (h₂ − h₁) / h₂</dd></div>
+          <div><dt>Suspended object depth</dt><dd>d · x_obj / x_shadow</dd></div>
+          <div><dt>Its horizontal distance</dt><dd>x_obj · √(x_shadow² − d²) / x_shadow</dd></div>
+          <div><dt>Bottom covered each side</dt><dd>d / tan(e + w) to d / tan(e)</dd></div>
+        </dl>
+        <p class="hint">h₁, h₂ = true horizontal distances to where the shadow starts and ends. e = upper edge of the fan below horizontal, w = fan width.</p>
+        <p class="mathp">Why the sum of the errors is constant: add the two formulas and the square roots cancel, leaving d. The two shortcuts, x and x − d, are always exactly d apart, and the true horizontal distance always lies between them. Whatever one overshoots, the other undershoots by d minus that amount.</p>
+        <p class="mathp">Example, d = 10 m, x = 20 m: true horizontal √(400 − 100) = 17.3 m. Solid error 20 − 17.3 = 2.7 m, dashed error 17.3 − 10 = 7.3 m, and 2.7 + 7.3 = 10 m = d.</p>
+          </div>
+        </details>
+      </section>
+      <section class="panel" aria-labelledby="m-vs" data-eq="2d ds">
+        <details class="sub" open data-sub="m-vs">
+          <summary><span class="eyebrow" id="m-vs">2D and <span data-n="down">DownScan</span></span></summary>
+          <div class="subb">
+        <dl class="results">
+          <div><dt>Width on the bottom</dt><dd>2 · d · tan(θ/2)</dd></div>
+          <div><dt>Drawn depth of a target</dt><dd>√(z² + x²) = z / cos α</dd></div>
+          <div><dt>Too deep, in percent</dt><dd>1/cos α − 1</dd></div>
+          <div data-eq="2d"><dt>Arch top</dt><dd>√(z² + y²)</dd></div>
+          <div data-eq="2d"><dt>Arch ends</dt><dd>z / cos(θ/2)</dd></div>
+          <div data-eq="2d"><dt>Time in the cone</dt><dd>2·√((z·tan(θ/2))² − y²) / speed</dd></div>
+          <div data-eq="ds"><dt>Time in the <span data-n="down">DownScan</span> fan</dt><dd>2·√(z² + y²)·tan(t/2) / speed</dd></div>
+        </dl>
+        <p class="hint">d = bottom depth, z = target depth, x or y = distance to the side, θ = full beam angle, t = <span data-n="down">DownScan</span> thickness, α = angle from straight down.</p>
+          </div>
+        </details>
+      </section>
+      <section class="panel" aria-labelledby="m-at" data-eq="at">
+        <details class="sub" open data-sub="m-at">
+          <summary><span class="eyebrow" id="m-at"><span data-n="live">ActiveTarget 2</span></span></summary>
+          <div class="subb">
+        <dl class="results">
+          <div><dt>Slice thickness at distance r</dt><dd>2 · r · tan(t/2)</dd></div>
+          <div><dt>Inside the slice when</dt><dd>atan(off / ρ) ≤ t/2</dd></div>
+          <div><dt>Drawn too far out by the factor</dt><dd>√(ρ² + off²) / ρ</dd></div>
+          <div><dt>Worst case at the edge</dt><dd>1 / cos(t/2)</dd></div>
+          <div><dt><span data-n="flat">Scout</span> mark at screen distance r</dt><dd>depth zt + r·sin(β ∓ t/2)</dd></div>
+          <div><dt><span data-n="flat">Scout</span> meets the bottom at</dt><dd>d / sin(β + t/2)</dd></div>
+          <div data-eq="atw"><dt><span data-n="wide">Scout Wide</span> covers</dt><dd>2 × fan width</dd></div>
+        </dl>
+        <p class="hint">t = slice thickness, ρ = distance within the fan's plane, off = distance out of that plane, β = <span data-n="flat">Scout</span> angle below horizontal, d = depth under the transducer, zt = transducer depth below the surface.</p>
+          </div>
+        </details>
+      </section>
+      <section class="panel" aria-labelledby="m-db" data-eq="ss 2d ds">
+        <details class="sub" open data-sub="m-db">
+          <summary><span class="eyebrow" id="m-db">Distance behind the boat</span></summary>
+          <div class="subb">
+        <dl class="results"><div><dt>Distance back</dt><dd>SOG × crossing time × position / 100%</dd></div></dl>
+          </div>
+        </details>
+      </section>
+    </div>
+  </details>
+
+  <footer>
+    <p><b>Assumptions.</b> A flat bottom, a level and steady transducer, and sound travelling in a straight line at the speed your unit uses. Slopes, thermoclines and a wrong depth offset all shift the answers. Real beams fade toward their edges instead of stopping sharply.</p>
+    <p><b>Sources.</b> Every preset figure is listed with its source, a link and a confidence rating in the Data and sources section.</p>
+    <p class="src"><b>Source.</b> The <a href="https://github.com/factoincognito/acuteping-web" target="_blank" rel="noopener">source code</a> of this page, its <a href="https://github.com/factoincognito/acuteping-web/blob/main/LICENSE" target="_blank" rel="noopener">licence text</a> and its <a href="https://github.com/factoincognito/acuteping-web/blob/main/CHANGELOG.md" target="_blank" rel="noopener">changelog</a> are in its public repository.</p>
+    <p class="lic"><b>Licence.</b> Free to use. © 2026 Adam Smolowicz. The source code is available under the <a href="https://polyformproject.org/licenses/noncommercial/1.0.0" target="_blank" rel="noopener">PolyForm Noncommercial License 1.0.0</a>: anyone may use, study and change it for non-commercial purposes, but not sell it or use it commercially. Required Notice: Copyright 2026 Adam Smolowicz</p>
+  </footer>
+</div>
+<script type="module" src="/src/main.ts"></script>
+
+</body>
 </html>

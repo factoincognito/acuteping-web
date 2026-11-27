@@ -1,0 +1,42 @@
+{
+ "format": 1,
+ "section": "cmp",
+ "scenario": {
+  "name": "live-at2xl-single",
+  "about": "ActiveTarget 2 XL with one transducer.",
+  "locale": "en-US",
+  "scheme": "dark",
+  "viewport": {"width":1280,"height":800},
+  "seed": {"v":{"live-p":"at2xl","at-n":"1"},"ui":{"open":{"set":true,"ls":true,"ss":true,"vs":true,"at":true,"cmp":true,"db":true,"data":true,"math":true}}},
+  "steps": null,
+  "fields": {"img-p":"lowrance","img-s":"","eq-ss":true,"eq-ds":true,"eq-2d":true,"eq-at":true,"live-p":"at2xl","at-n":"1","atsb":"20","atfa":"45","dep":"10","sog":"2","sogu":"kn","ssr":"40","atr":"30","zt":"0.5","cone0":"50","cone1":"20","down0":"51","down1":"30","dst":"3","side0":"85","side1":"36","sso":"5","sst":"2","ssalign":"inner","atw":"180","att":"20","lsfx":"12","lsfh":"3","ssR":"20","s1":"20","s2":"24","ro":"7.1","rs":"14.1","z":"8","x":"2","zf":"6","y":"0","scrT":"20","fx":"15","fz":"5","fy":"1.5","sr":"20","tscr":"20","frac":"50"},
+  "ui": {"open":{"set":true,"ls":true,"ss":true,"vs":true,"at":true,"cmp":true,"db":true,"data":true,"math":true},"lsB":"rock","lsA":"low","ssMode":"bottom","ssf":"0","f2d":"0","fds":"0","db":"ss","relDepth":5,"errOn":{"1":true,"3":true,"5":true,"8":true,"10":true},"behind":{"side0":true,"side1":false,"side2":false,"cone0":true,"cone1":true,"down0":true,"down1":true,"down2":true,"live":true,"livel":true,"livef":true,"lives":true,"livew":true},"fp":{"cone0":true,"cone1":true,"down0":true,"down1":true,"down2":false,"live":false,"livel":false,"side0":false,"side1":false,"livef":false,"lives":false,"livew":false},"sub":{"eq-h":true,"cond-h":true,"fl-h":true,"lsd-h":true,"in-h":true,"sh-h":true,"ssb-h":true,"err-h":true,"rel-h":true,"sim-h":true,"cov-h":true,"fq-h":true,"off-h":true,"arch-h":true,"vsim-h":true,"bs-h":true,"pos-h":true,"sc-h":true,"bv-h":true,"asim-h":true,"allb-h":true,"behind":true,"fp":true,"side":true,"v3":true,"db-h":true,"cf-h":true,"m-ss":true,"m-vs":true,"m-at":true,"m-db":true}},
+  "scene3d": {"yaw":-0.6,"pitch":0.45,"zoom":1,"zx":1},
+  "theme": {"--accent":"#e6a640","--accent-soft":"#3a2b12","--bad":"#f28b82","--bg":"#0e1514","--c":"","--c2d":"#3987e5","--cds":"#d95926","--fg":"#e4ebe9","--font-body":"'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif","--font-data":"'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace","--font-display":"'Barlow Semi Condensed', 'Arial Narrow', 'Helvetica Neue', sans-serif","--ground":"#3a352b","--line":"#2b3a37","--muted":"#9aa9a5","--s1":"#3987e5","--s2":"#d95926","--s3":"#199e70","--s4":"#c98500","--s5":"#d55181","--s6":"#9085e9","--s7":"#e66767","--s8":"#2e9e2e","--surface":"#162120","--water":"#74b6cf"}
+ },
+ "patches": {
+  "sec-cmp": {"same":"live-at2xl-single/light"},
+  "ctx-cmp": {"same":"live-at2xl-single/light"},
+  "cmp-serr": {"same":"live-at2xl-single/light"},
+  "sec-cmp > div:nth-child(2) > section:nth-child(3) > details:nth-child(1) > div:nth-child(2) > p:nth-child(1) > span:nth-child(1)": {"same":"live-at2xl-single/light"},
+  "allb-cnt": {"same":"live-at2xl-single/light"},
+  "allb-chips": {"same":"live-at2xl-single/light"},
+  "sec-cmp > div:nth-child(2) > section:nth-child(4) > details:nth-child(1) > div:nth-child(2) > div:nth-child(1)": {"same":"live-at2xl-single/light"},
+  "sec-cmp > div:nth-child(2) > section:nth-child(4) > details:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > span:nth-child(3)": {"same":"live-at2xl-single/light"},
+  "ssb-all": {"same":"live-at2xl-single/light"},
+  "allb-res": {"same":"live-at2xl-single/light"},
+  "sec-cmp > div:nth-child(2) > section:nth-child(5) > details:nth-child(1) > div:nth-child(2) > div:nth-child(1)": {"same":"live-at2xl-single/light"},
+  "sec-cmp > div:nth-child(2) > section:nth-child(5) > details:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > span:nth-child(3)": {"same":"live-at2xl-single/light"},
+  "fp-svg": {"same":"live-at2xl-single/light"},
+  "fp-res": {"same":"live-at2xl-single/light"},
+  "sec-cmp > div:nth-child(2) > section:nth-child(6) > details:nth-child(1) > div:nth-child(2) > div:nth-child(1)": {"same":"live-at2xl-single/light"},
+  "sec-cmp > div:nth-child(2) > section:nth-child(6) > details:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > span:nth-child(3)": {"same":"live-at2xl-single/light"},
+  "side-svg": {"same":"live-at2xl-single/light"},
+  "side-res": {"same":"live-at2xl-single/light"},
+  "sec-cmp > div:nth-child(2) > section:nth-child(7) > details:nth-child(1) > div:nth-child(2) > div:nth-child(1)": {"same":"live-at2xl-single/light"},
+  "sec-cmp > div:nth-child(2) > section:nth-child(7) > details:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > span:nth-child(3)": {"same":"live-at2xl-single/light"}
+ },
+ "canvases": {
+  "b3d": {"width":680,"height":560,"passes":[{"by":"load","entries":9078,"fnv1a":"9e202b85","measured":[]},{"by":"frame","repeats":0}]}
+ }
+}

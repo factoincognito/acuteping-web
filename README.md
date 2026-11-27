@@ -4,9 +4,9 @@ The source of the acuteping web page: a sonar geometry calculator, about the
 cone a sonar transducer sends into the water and what that cone does and does
 not see.
 
-**Status: early.** The page does no sonar geometry yet; it shows a starter
-example. What is here is the build, the tests and the starting point of the
-page.
+**Status: early.** The page is a working sonar geometry calculator for side
+imaging, down imaging, 2D and live sonar. Its reference figures for
+transducers are still being reviewed.
 
 ## Licence
 
@@ -40,6 +40,8 @@ This repository is generated from a private one. A change is made there and
 published here as a whole new version; the history here is a list of versions
 of the page, not the history of the work. For that reason the repository takes
 no pull requests from outside.
+
+Claude, an AI model made by Anthropic, contributed to this repository.
 
 ## Contact
 

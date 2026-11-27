@@ -1,0 +1,39 @@
+{
+ "format": 1,
+ "section": "math",
+ "scenario": {
+  "name": "live-lvs34",
+  "about": "Live preset lvs34; transducer preset other, which offers it.",
+  "locale": "en-US",
+  "scheme": "light",
+  "viewport": {"width":1280,"height":800},
+  "seed": {"v":{"img-p":"other","live-p":"lvs34"},"ui":{"open":{"set":true,"ls":true,"ss":true,"vs":true,"at":true,"cmp":true,"db":true,"data":true,"math":true}}},
+  "steps": null,
+  "fields": {"img-p":"other","img-s":"","eq-ss":true,"eq-ds":true,"eq-2d":true,"eq-at":true,"live-p":"lvs34","at-n":"2","atsb":"20","atfa":"45","dep":"10","sog":"2","sogu":"kn","ssr":"40","atr":"30","zt":"0.5","cone0":"50","cone1":"20","down0":"75","down1":"45","dst":"3","side0":"85","side1":"55","sso":"5","sst":"2","ssalign":"inner","atw":"135","att":"20","lsfx":"12","lsfh":"3","ssR":"20","s1":"20","s2":"24","ro":"7.1","rs":"14.1","z":"8","x":"2","zf":"6","y":"0","scrT":"20","fx":"15","fz":"5","fy":"1.5","sr":"20","tscr":"20","frac":"50"},
+  "ui": {"open":{"set":true,"ls":true,"ss":true,"vs":true,"at":true,"cmp":true,"db":true,"data":true,"math":true},"lsB":"rock","lsA":"low","ssMode":"bottom","ssf":"0","f2d":"0","fds":"0","db":"ss","relDepth":5,"errOn":{"1":true,"3":true,"5":true,"8":true,"10":true},"behind":{"side0":true,"side1":false,"side2":false,"cone0":true,"cone1":true,"down0":true,"down1":true,"down2":true,"live":true,"livel":true,"livef":true,"lives":true,"livew":true},"fp":{"cone0":true,"cone1":true,"down0":true,"down1":true,"down2":false,"live":false,"livel":false,"side0":false,"side1":false,"livef":false,"lives":false,"livew":false},"sub":{"eq-h":true,"cond-h":true,"fl-h":true,"lsd-h":true,"in-h":true,"sh-h":true,"ssb-h":true,"err-h":true,"rel-h":true,"sim-h":true,"cov-h":true,"fq-h":true,"off-h":true,"arch-h":true,"vsim-h":true,"bs-h":true,"pos-h":true,"sc-h":true,"bv-h":true,"asim-h":true,"allb-h":true,"behind":true,"fp":true,"side":true,"v3":true,"db-h":true,"cf-h":true,"m-ss":true,"m-vs":true,"m-at":true,"m-db":true}},
+  "scene3d": {"yaw":-0.6,"pitch":0.45,"zoom":1,"zx":1},
+  "theme": {"--accent":"#9a5a00","--accent-soft":"#f5e7d0","--bad":"#a8261d","--bg":"#eef2f1","--c":"","--c2d":"#2a78d6","--cds":"#eb6834","--fg":"#14201e","--font-body":"'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif","--font-data":"'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace","--font-display":"'Barlow Semi Condensed', 'Arial Narrow', 'Helvetica Neue', sans-serif","--ground":"#d9d2c3","--line":"#c8d2cf","--muted":"#56645f","--s1":"#2a78d6","--s2":"#eb6834","--s3":"#1baf7a","--s4":"#c98500","--s5":"#d55181","--s6":"#4a3aa7","--s7":"#e34948","--s8":"#008300","--surface":"#ffffff","--water":"#2f6f86"}
+ },
+ "patches": {
+  "sec-math": {"same":"all-open/light"},
+  "sec-math > div:nth-child(2) > section:nth-child(1)": {"same":"all-open/light"},
+  "m-ss > span:nth-child(1)": {"text":"Side imaging","html":"Side imaging"},
+  "sec-math > div:nth-child(2) > section:nth-child(2)": {"same":"all-open/light"},
+  "m-vs > span:nth-child(1)": {"text":"Down imaging","html":"Down imaging"},
+  "sec-math > div:nth-child(2) > section:nth-child(2) > details:nth-child(1) > div:nth-child(2) > dl:nth-child(1) > div:nth-child(4)": {"same":"all-open/light"},
+  "sec-math > div:nth-child(2) > section:nth-child(2) > details:nth-child(1) > div:nth-child(2) > dl:nth-child(1) > div:nth-child(5)": {"same":"all-open/light"},
+  "sec-math > div:nth-child(2) > section:nth-child(2) > details:nth-child(1) > div:nth-child(2) > dl:nth-child(1) > div:nth-child(6)": {"same":"all-open/light"},
+  "sec-math > div:nth-child(2) > section:nth-child(2) > details:nth-child(1) > div:nth-child(2) > dl:nth-child(1) > div:nth-child(7)": {"same":"all-open/light"},
+  "sec-math > div:nth-child(2) > section:nth-child(2) > details:nth-child(1) > div:nth-child(2) > dl:nth-child(1) > div:nth-child(7) > dt:nth-child(1) > span:nth-child(1)": {"text":"Down imaging","html":"Down imaging"},
+  "sec-math > div:nth-child(2) > section:nth-child(2) > details:nth-child(1) > div:nth-child(2) > p:nth-child(2) > span:nth-child(1)": {"text":"Down imaging","html":"Down imaging"},
+  "sec-math > div:nth-child(2) > section:nth-child(3)": {"same":"all-open/light"},
+  "m-at > span:nth-child(1)": {"text":"LiveScope Plus","html":"LiveScope Plus"},
+  "sec-math > div:nth-child(2) > section:nth-child(3) > details:nth-child(1) > div:nth-child(2) > dl:nth-child(1) > div:nth-child(5) > dt:nth-child(1) > span:nth-child(1)": {"text":"Perspective","html":"Perspective"},
+  "sec-math > div:nth-child(2) > section:nth-child(3) > details:nth-child(1) > div:nth-child(2) > dl:nth-child(1) > div:nth-child(6) > dt:nth-child(1) > span:nth-child(1)": {"text":"Perspective","html":"Perspective"},
+  "sec-math > div:nth-child(2) > section:nth-child(3) > details:nth-child(1) > div:nth-child(2) > dl:nth-child(1) > div:nth-child(7)": {"hidden":true},
+  "sec-math > div:nth-child(2) > section:nth-child(3) > details:nth-child(1) > div:nth-child(2) > dl:nth-child(1) > div:nth-child(7) > dt:nth-child(1) > span:nth-child(1)": {"text":"Perspective Wide","html":"Perspective Wide"},
+  "sec-math > div:nth-child(2) > section:nth-child(3) > details:nth-child(1) > div:nth-child(2) > p:nth-child(2) > span:nth-child(1)": {"text":"Perspective","html":"Perspective"},
+  "sec-math > div:nth-child(2) > section:nth-child(4)": {"same":"all-open/light"}
+ },
+ "canvases": {}
+}

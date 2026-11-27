@@ -1,0 +1,35 @@
+{
+ "format": 1,
+ "section": "ls",
+ "scenario": {
+  "name": "ls-rock-steep",
+  "about": "Bottom rock, beam steep.",
+  "locale": "en-US",
+  "scheme": "light",
+  "viewport": {"width":1280,"height":800},
+  "seed": {"v":{},"ui":{"open":{"set":true,"ls":true},"lsB":"rock","lsA":"steep"}},
+  "steps": null,
+  "fields": {"img-p":"lowrance","img-s":"","eq-ss":true,"eq-ds":true,"eq-2d":true,"eq-at":true,"live-p":"at2","at-n":"2","atsb":"20","atfa":"45","dep":"10","sog":"2","sogu":"kn","ssr":"40","atr":"30","zt":"0.5","cone0":"50","cone1":"20","down0":"51","down1":"30","dst":"3","side0":"85","side1":"36","sso":"5","sst":"2","ssalign":"inner","atw":"135","att":"18","lsfx":"12","lsfh":"3","ssR":"20","s1":"20","s2":"24","ro":"7.1","rs":"14.1","z":"8","x":"2","zf":"6","y":"0","scrT":"20","fx":"15","fz":"5","fy":"1.5","sr":"20","tscr":"20","frac":"50"},
+  "ui": {"open":{"set":true,"ls":true},"lsB":"rock","lsA":"steep","ssMode":"bottom","ssf":"0","f2d":"0","fds":"0","db":"ss","relDepth":5,"errOn":{"1":true,"3":true,"5":true,"8":true,"10":true},"behind":{"side0":true,"side1":false,"side2":false,"cone0":true,"cone1":true,"down0":true,"down1":true,"down2":true,"live":true,"livel":true,"livef":true,"lives":true,"livew":true},"fp":{"cone0":true,"cone1":true,"down0":true,"down1":true,"down2":false,"live":false,"livel":false,"side0":false,"side1":false,"livef":false,"lives":false,"livew":false},"sub":{"eq-h":true,"cond-h":true,"fl-h":true,"lsd-h":true,"in-h":true,"sh-h":true,"ssb-h":true,"err-h":true,"rel-h":true,"sim-h":true,"cov-h":true,"fq-h":true,"off-h":true,"arch-h":true,"vsim-h":true,"bs-h":true,"pos-h":true,"sc-h":true,"bv-h":true,"asim-h":true,"allb-h":true,"behind":true,"fp":true,"side":true,"v3":true,"db-h":true,"cf-h":true,"m-ss":true,"m-vs":true,"m-at":true,"m-db":true}},
+  "scene3d": {"yaw":-0.6,"pitch":0.45,"zoom":1,"zx":1},
+  "theme": {"--accent":"#9a5a00","--accent-soft":"#f5e7d0","--bad":"#a8261d","--bg":"#eef2f1","--c":"","--c2d":"#2a78d6","--cds":"#eb6834","--fg":"#14201e","--font-body":"'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif","--font-data":"'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace","--font-display":"'Barlow Semi Condensed', 'Arial Narrow', 'Helvetica Neue', sans-serif","--ground":"#d9d2c3","--line":"#c8d2cf","--muted":"#56645f","--s1":"#2a78d6","--s2":"#eb6834","--s3":"#1baf7a","--s4":"#c98500","--s5":"#d55181","--s6":"#4a3aa7","--s7":"#e34948","--s8":"#008300","--surface":"#ffffff","--water":"#2f6f86"}
+ },
+ "patches": {
+  "sec-ls": {"same":"all-open/light"},
+  "ctx-ls": {"same":"all-open/light"},
+  "lsb > button:nth-child(1)": {"same":"all-open/light"},
+  "lsb > button:nth-child(2)": {"same":"all-open/light"},
+  "lsb > button:nth-child(3)": {"same":"all-open/light"},
+  "lsb > button:nth-child(4)": {"same":"all-open/light"},
+  "lsb > button:nth-child(5)": {"same":"all-open/light"},
+  "lsb > button:nth-child(6)": {"same":"all-open/light"},
+  "lsa > button:nth-child(1)": {"attrs":{"aria-pressed":"false"}},
+  "lsa > button:nth-child(2)": {"attrs":{"aria-pressed":"true"}},
+  "ls-err": {"same":"all-open/light"},
+  "ls-svg": {"text":"transducer (the flashlight)10.0 m deep · 50.0 m across · depth ×2.5","html":{"fnv1a":"075e0440","length":143300},"attrs":{"viewBox":"0 0 340 201"}},
+  "ls-leg": {"same":"all-open/light"},
+  "ls-scr": {"text":"first bottom echo0 → 50.0 m from the transducer","html":"<rect x=\"8\" y=\"4\" width=\"324\" height=\"30\" fill=\"#0b1118\"></rect><rect x=\"72.80\" y=\"4\" width=\"1.41\" height=\"30\" fill=\"rgb(255,198,138)\"></rect><rect x=\"73.81\" y=\"4\" width=\"1.41\" height=\"30\" fill=\"rgb(255,194,133)\"></rect><rect x=\"74.83\" y=\"4\" width=\"1.41\" height=\"30\" fill=\"rgb(255,189,129)\"></rect><rect x=\"75.84\" y=\"4\" width=\"1.41\" height=\"30\" fill=\"rgb(255,185,125)\"></rect><rect x=\"76.85\" y=\"4\" width=\"1.41\" height=\"30\" fill=\"rgb(255,181,121)\"></rect><rect x=\"77.86\" y=\"4\" width=\"1.41\" height=\"30\" fill=\"rgb(255,178,117)\"></rect><rect x=\"78.88\" y=\"4\" width=\"1.41\" height=\"30\" fill=\"rgb(255,174,114)\"></rect><rect x=\"79.89\" y=\"4\" width=\"1.41\" height=\"30\" fill=\"rgb(255,171,110)\"></rect><rect x=\"80.90\" y=\"4\" width=\"1.41\" height=\"30\" fill=\"rgb(254,167,107)\"></rect><rect x=\"81.91\" y=\"4\" width=\"1.41\" height=\"30\" fill=\"rgb(252,164,104)\"></rect><rect x=\"82.92\" y=\"4\" width=\"1.41\" height=\"30\" fill=\"rgb(249,161,101)\"></rect><rect x=\"83.94\" y=\"4\" width=\"1.41\" height=\"30\" fill=\"rgb(247,158,98)\"></rect><rect x=\"84.95\" y=\"4\" width=\"1.41\" height=\"30\" fill=\"rgb(245,155,96)\"></rect><rect x=\"85.96\" y=\"4\" width=\"1.41\" height=\"30\" fill=\"rgb(243,153,93)\"></rect><rect x=\"86.97\" y=\"4\" width=\"1.41\" height=\"30\" fill=\"rgb(240,150,91)\"></rect><line x1=\"72.8\" x2=\"72.8\" y1=\"34\" y2=\"39\" stroke=\"var(--muted)\" stroke-width=\"0.8\"></line><text x=\"72.8\" y=\"48\" text-anchor=\"middle\" font-size=\"10\" fill=\"var(--muted)\">first bottom echo</text><text x=\"332\" y=\"90\" text-anchor=\"end\" font-family=\"var(--font-data)\" font-size=\"10\" fill=\"var(--muted)\">0 → 50.0 m from the transducer</text>"},
+  "ls-res": {"text":"Fishoutside the beam, or hidden behind the bottom: no echo, no shadow. This beam reaches the bottom only out to 7.0 m; move the fish closerBottom hidden by the bottom itselfnone: every part of the bottom inside the beam faces the lightBottom litfrom 0.00 to 7.0 m out","html":"<div><dt>Fish</dt><dd>outside the beam, or hidden behind the bottom: no echo, no shadow. This beam reaches the bottom only out to 7.0 m; move the fish closer</dd></div><div><dt>Bottom hidden by the bottom itself</dt><dd>none: every part of the bottom inside the beam faces the light</dd></div><div><dt>Bottom lit</dt><dd>from 0.00 to 7.0 m out</dd></div>"}
+ },
+ "canvases": {}
+}

@@ -3,6 +3,13 @@
 What a visitor to the acuteping page can see changed in each release of this
 repository, newest first.
 
+## 0.2.1 - 2026-11-28
+
+- The 3D beam view now fills the footprint on the bottom of the side imaging
+  fans, the down imaging fans and the live sonar's fan modes exactly. Before,
+  the fill could show a darker area outside the outline. The live sonar's flat
+  and wide modes are not changed and can still show it with a steep mount.
+
 ## 0.2.0 - 2026-11-27
 
 - The page is now the sonar geometry calculator: side imaging, down imaging,

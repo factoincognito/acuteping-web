@@ -974,7 +974,7 @@ function colOf(col: string, theme: Theme): string {
 }
 
 /** The triangles that fill a polygon from its first corner. */
-function fanTriangles(pts: readonly Point3[]): [Point3, Point3, Point3][] {
+export function fanTriangles(pts: readonly Point3[]): [Point3, Point3, Point3][] {
   const out: [Point3, Point3, Point3][] = [];
   const first = pts[0];
   if (first === undefined) return out;
@@ -983,6 +983,82 @@ function fanTriangles(pts: readonly Point3[]): [Point3, Point3, Point3][] {
     const q = pts[i + 1];
     if (p !== undefined && q !== undefined) out.push([first, p, q]);
   }
+  return out;
+}
+
+/**
+ * The triangles that fill a footprint on the bottom, exactly: a polygon that bends inward, such
+ * as the hourglass of a live sonar's fan, is cut into ears, so that no triangle lies outside its
+ * outline; a polygon that does not bend inward is filled from its first corner, as `fanTriangles`
+ * does. The corners are read in the plane of the bottom (x and y).
+ */
+function fillTriangles(pts: readonly Point3[]): [Point3, Point3, Point3][] {
+  const n = pts.length;
+  if (n < 3) return [];
+  const at = (i: number): Point3 => pts[i] as Point3;
+  const cross = (a: Point3, b: Point3, c: Point3): number =>
+    (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
+  let twice = 0;
+  for (let i = 0; i < n; i++) {
+    const a = at(i);
+    const b = at((i + 1) % n);
+    twice += a[0] * b[1] - b[0] * a[1];
+  }
+  // Corners in counter-clockwise order, so that a corner that bends outward has a positive cross.
+  const order = Array.from({ length: n }, (_, i) => (twice >= 0 ? i : n - 1 - i));
+  let bends = false;
+  for (let i = 0; i < n; i++) {
+    const c = cross(
+      at(order[i] as number),
+      at(order[(i + 1) % n] as number),
+      at(order[(i + 2) % n] as number),
+    );
+    if (c < 0) bends = true;
+  }
+  if (!bends) return fanTriangles(pts);
+  const out: [Point3, Point3, Point3][] = [];
+  const rest = [...order];
+  const insideTri = (p: Point3, a: Point3, b: Point3, c: Point3): boolean =>
+    cross(a, b, p) >= 0 && cross(b, c, p) >= 0 && cross(c, a, p) >= 0;
+  while (rest.length > 3) {
+    let cut = -1;
+    for (let k = 0; k < rest.length && cut < 0; k++) {
+      const a = at(rest[(k + rest.length - 1) % rest.length] as number);
+      const b = at(rest[k] as number);
+      const c = at(rest[(k + 1) % rest.length] as number);
+      if (cross(a, b, c) <= 0) continue;
+      const free = rest.every((j) => {
+        const q = at(j);
+        return q === a || q === b || q === c || !insideTri(q, a, b, c);
+      });
+      if (free) cut = k;
+    }
+    if (cut < 0) {
+      // Corners in a straight line, or an outline that crosses itself: drop a flat corner, or fill what is left from its first corner.
+      const flat = rest.findIndex(
+        (_, k) =>
+          cross(
+            at(rest[(k + rest.length - 1) % rest.length] as number),
+            at(rest[k] as number),
+            at(rest[(k + 1) % rest.length] as number),
+          ) === 0,
+      );
+      if (flat < 0) {
+        out.push(...fanTriangles(rest.map(at)));
+        return out;
+      }
+      rest.splice(flat, 1);
+      continue;
+    }
+    out.push([
+      at(rest[(cut + rest.length - 1) % rest.length] as number),
+      at(rest[cut] as number),
+      at(rest[(cut + 1) % rest.length] as number),
+    ]);
+    rest.splice(cut, 1);
+  }
+  if (rest.length === 3)
+    out.push([at(rest[0] as number), at(rest[1] as number), at(rest[2] as number)]);
   return out;
 }
 
@@ -998,9 +1074,14 @@ function closed(pts: readonly Point3[]): Point3[] {
  * the outline of its sheets (the side fans' two sheets, a cone, a fan, the
  * live sonar's slice) and of its footprint on the bottom, in metres. `ext` is
  * how far to each side the scene reaches, rounded up. Reads the style for the
- * colour of each beam.
+ * colour of each beam. `fill` cuts a footprint into the triangles that fill it: the exact fill by
+ * default, `fanTriangles` for the earlier page's fill, which the tests that compare with the
+ * recording of that page ask for.
  */
-export function buildScene(input: SceneInput): Scene3d {
+export function buildScene(
+  input: SceneInput,
+  fill: (pts: readonly Point3[]) => [Point3, Point3, Point3][] = fillTriangles,
+): Scene3d {
   const { settings: a, eq, ui, names, theme } = input;
   const align = alignOf(input.local);
   const H = a.dep;
@@ -1022,7 +1103,7 @@ export function buildScene(input: SceneInput): Scene3d {
       lines.push({ p: closed(sh), c, w: SHEET.width, d: dash });
     }
     for (const ft of foots) {
-      for (const p of fanTriangles(ft)) {
+      for (const p of fill(ft)) {
         tris.push({ p, f: rgba(c, FOOTPRINT.opacity), foot: true });
       }
       lines.push({ p: closed(ft), c, w: FOOTPRINT.width, d: "" });
@@ -1059,7 +1140,7 @@ export function buildScene(input: SceneInput): Scene3d {
             }
           }
         } else {
-          for (const p of fanTriangles(fl)) {
+          for (const p of fill(fl)) {
             tris.push({ p, f: rgba(c3, FOOTPRINT.opacity), foot: true });
           }
         }

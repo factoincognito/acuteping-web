@@ -29,6 +29,7 @@ import {
   buildScene,
   cmpList,
   compareView,
+  fanTriangles,
   footprintView,
   KEYS,
   paintScene,
@@ -1398,8 +1399,8 @@ describe("the order of floating-point arithmetic at typed values (round 1 of the
     [
       "depth 45.05, a fan just under its limit",
       { over: { dep: "45.05" } },
-      "45.05/44/600/86 b8e81e6e",
-      "5770:220295d5",
+      "45.05/44/600/86 ab4eb161",
+      "5770:73d60c24",
       [
         "h:35c85140:2719",
         "r:11:3ef8c646",
@@ -1413,8 +1414,8 @@ describe("the order of floating-point arithmetic at typed values (round 1 of the
     [
       "depth 40, both ranges 46",
       { over: { dep: "40", ssr: "46", atr: "46" } },
-      "40/51/970/93 232d3b91",
-      "8729:fb5b2ca9",
+      "40/51/969/93 2c70bb9a",
+      "8722:8586293e",
       [
         "h:62141762:9306",
         "r:11:3d91a67d",
@@ -1428,8 +1429,8 @@ describe("the order of floating-point arithmetic at typed values (round 1 of the
     [
       "depth 4.9, ranges 4.9 and the next number up",
       { over: { dep: "4.9", ssr: "4.9", atr: "4.900000000000001" } },
-      "4.9/6/924/90 4e4133ed",
-      "8366:ffae81b0",
+      "4.9/6/910/90 a3b49008",
+      "8268:34cc8c32",
       [
         "h:6819e757:7091",
         "r:11:89164545",
@@ -1443,8 +1444,8 @@ describe("the order of floating-point arithmetic at typed values (round 1 of the
     [
       "depth 0.45, side range the next number over 10",
       { over: { dep: "0.45", ssr: "10.000000000000002" } },
-      "0.45/33/1346/96 999e0cde",
-      "11796:33e2a935",
+      "0.45/33/1346/96 1b9ca5f0",
+      "11796:7ff04e7b",
       [
         "h:6a40b91a:14655",
         "r:11:fca85d1c",
@@ -1458,8 +1459,8 @@ describe("the order of floating-point arithmetic at typed values (round 1 of the
     [
       "depth 0.05, the other live preset",
       { live: "other", over: { dep: "0.05" } },
-      "0.05/33/1121/94 2e1d972b",
-      "9978:c712bbe1",
+      "0.05/33/1120/94 d777e84d",
+      "9971:d70f64c9",
       [
         "h:a861cf56:12706",
         "r:10:83fe5f33",
@@ -1473,8 +1474,8 @@ describe("the order of floating-point arithmetic at typed values (round 1 of the
     [
       "depth 0.05, LiveScope Plus",
       { live: "lvs34", over: { dep: "0.05" } },
-      "0.05/33/1121/94 2e1d972b",
-      "9978:c712bbe1",
+      "0.05/33/1120/94 d777e84d",
+      "9971:d70f64c9",
       [
         "h:a861cf56:12706",
         "r:10:e6abcb8e",
@@ -1488,8 +1489,8 @@ describe("the order of floating-point arithmetic at typed values (round 1 of the
     [
       "Humminbird 1400, MEGA fan 107.6, depth 46.8",
       { first: "hb_xm14hw", over: { dep: "46.8", down2: "107.6" } },
-      "46.8/68/752/90 45912003",
-      "6958:76f55751",
+      "46.8/68/752/90 71c6f4ce",
+      "6958:b060be13",
       [
         "h:fe2e7d55:4034",
         "r:13:7bba1a69",
@@ -1503,8 +1504,8 @@ describe("the order of floating-point arithmetic at typed values (round 1 of the
     [
       "live fan 5.5 degrees",
       { over: { atw: "5.5" } },
-      "10/44/1338/96 018dc969",
-      "11764:3f675111",
+      "10/44/1338/96 0d75e14f",
+      "11764:7d152b72",
       [
         "h:fdfa3d8d:14530",
         "r:11:6a031f9a",
@@ -1539,8 +1540,8 @@ describe("the order of floating-point arithmetic at typed values (round 1 of the
           ssalign: "inner",
         },
       },
-      "3.7/5/992/93 d6b138d0",
-      "8905:6a0f0114",
+      "3.7/5/992/93 de22dc2a",
+      "8905:d6c44d91",
       [
         "h:920e74c5:7317",
         "r:13:b1f2d492",
@@ -1579,8 +1580,8 @@ describe("the order of floating-point arithmetic at typed values (round 1 of the
           side2: "45.3",
         },
       },
-      "18.6/105/1337/100 ec0c4896",
-      "11792:51b61043",
+      "18.6/105/1337/100 dce4f4c6",
+      "11792:52050c5c",
       [
         "h:cf61d15e:15963",
         "r:12:c0632770",
@@ -1611,8 +1612,8 @@ describe("the order of floating-point arithmetic at typed values (round 1 of the
           ssalign: "center",
         },
       },
-      "29.8/62/1121/94 c848a664",
-      "9946:6fa6a10a",
+      "29.8/62/1121/94 b3d64a99",
+      "9946:2657eb17",
       [
         "h:6467bb30:12153",
         "r:10:88980479",
@@ -1649,8 +1650,8 @@ describe("the order of floating-point arithmetic at typed values (round 1 of the
           side1: "30.78",
         },
       },
-      "13.69/104/1121/94 1f322103",
-      "10010:27525d59",
+      "13.69/104/1120/94 cb651167",
+      "10003:3aa097d3",
       [
         "h:5c8e6d5f:13210",
         "r:10:a8153b0f",
@@ -1686,8 +1687,8 @@ describe("the order of floating-point arithmetic at typed values (round 1 of the
           side1: "18.6",
         },
       },
-      "0.8/4/765/88 bf1ffd54",
-      "7044:034692c7",
+      "0.8/4/765/88 9d9390fe",
+      "7044:82d788b6",
       [
         "h:3734c405:5396",
         "r:10:85bd9957",
@@ -1718,8 +1719,8 @@ describe("the order of floating-point arithmetic at typed values (round 1 of the
           ssalign: "center",
         },
       },
-      "5.12/81/993/90 a61dffbf",
-      "8918:152128d6",
+      "5.12/81/992/90 5cf44a18",
+      "8911:d14c6066",
       [
         "h:2bc26f25:9498",
         "r:10:f08d50cc",
@@ -1751,8 +1752,8 @@ describe("the order of floating-point arithmetic at typed values (round 1 of the
           ssalign: "inner",
         },
       },
-      "8/31/1564/102 a9909bc3",
-      "13594:1b72618f",
+      "8/31/1564/102 cbfa6c7e",
+      "13594:86376196",
       [
         "h:473af320:17146",
         "r:13:1a1458d2",
@@ -1782,8 +1783,8 @@ describe("the order of floating-point arithmetic at typed values (round 1 of the
           ssalign: "center",
         },
       },
-      "67.7/101/584/87 3680a7cd",
-      "5651:dfbe7a13",
+      "67.7/101/584/87 c4c5b305",
+      "5651:d6dbc53f",
       [
         "h:4fd42f98:3550",
         "r:11:2b6160c3",
@@ -1812,8 +1813,8 @@ describe("the order of floating-point arithmetic at typed values (round 1 of the
           ssalign: "inner",
         },
       },
-      "43/48/758/88 54b3f16e",
-      "7052:84f1c353",
+      "43/48/758/88 7744d3af",
+      "7052:3d639a8f",
       [
         "h:bd7ea488:4824",
         "r:11:07913cb7",
@@ -1845,8 +1846,8 @@ describe("the order of floating-point arithmetic at typed values (round 1 of the
           ssalign: "center",
         },
       },
-      "0.4/10/1335/100 787201fb",
-      "11712:8f20015c",
+      "0.4/10/1335/100 3591052c",
+      "11712:7ea0616d",
       [
         "h:e6a1be04:14906",
         "r:12:212d5f39",
@@ -1877,8 +1878,8 @@ describe("the exact limit of a side fan's reach (xO > xIn, legacy lines 523, 104
     [
       "depth 0.9, range 0.9890530825922429",
       { over: { dep: "0.9", ssr: "0.9890530825922429", ssalign: "center" } },
-      "0.9/33/1282/94 c2942f82",
-      "11266:75ddbf8d",
+      "0.9/33/1281/94 14bfc7a7",
+      "11259:6385202f",
       [
         "h:6ba426ff:12937",
         "r:11:09934265",
@@ -1892,8 +1893,8 @@ describe("the exact limit of a side fan's reach (xO > xIn, legacy lines 523, 104
     [
       "depth 6.3, range 6.9233715781457",
       { over: { dep: "6.3", ssr: "6.9233715781457", ssalign: "center" } },
-      "6.3/33/1282/94 6213e33d",
-      "11266:8e892bdf",
+      "6.3/33/1281/94 ab36138e",
+      "11259:3f67b6d6",
       [
         "h:5010acd4:12764",
         "r:11:c48c5285",
@@ -1907,8 +1908,8 @@ describe("the exact limit of a side fan's reach (xO > xIn, legacy lines 523, 104
     [
       "depth 7.2, range 7.912424660737943",
       { over: { dep: "7.2", ssr: "7.912424660737943", ssalign: "center" } },
-      "7.2/33/1282/94 4513adf1",
-      "11266:d84d26ec",
+      "7.2/33/1281/94 a69ec98c",
+      "11259:34236014",
       [
         "h:be4aa24d:12730",
         "r:11:e432b081",
@@ -1922,8 +1923,8 @@ describe("the exact limit of a side fan's reach (xO > xIn, legacy lines 523, 104
     [
       "depth 6.3, the range the next number down",
       { over: { dep: "6.3", ssr: "6.923371578145699", ssalign: "center" } },
-      "6.3/33/1282/94 b8ffe6e5",
-      "11266:fa953eb7",
+      "6.3/33/1281/94 18e2101c",
+      "11259:bd99fbf0",
       [
         "h:5010acd4:12764",
         "r:11:c48c5285",
@@ -1937,8 +1938,8 @@ describe("the exact limit of a side fan's reach (xO > xIn, legacy lines 523, 104
     [
       "depth 6.3, the range the next number up",
       { over: { dep: "6.3", ssr: "6.923371578145701", ssalign: "center" } },
-      "6.3/33/1346/96 b4144b2c",
-      "11796:2f302e3c",
+      "6.3/33/1345/96 148d80c5",
+      "11789:ea1edf3f",
       [
         "h:2d21e750:14482",
         "r:11:9c3daaf2",
@@ -1967,18 +1968,18 @@ describe("the 3D scene and its drawing: where labels lie near one another (rende
     [
       "the vertical limit, zoomed out, from the left",
       { yaw: -0.95, pitch: 0, zoom: 0.5, zx: 1 },
-      "10895:e0ffce01",
+      "10888:4a546ab2",
     ],
     [
       "the vertical limit, zoomed out, tilted",
       { yaw: -1, pitch: 0.15, zoom: 0.5, zx: 1 },
-      "10895:44e4f037",
+      "10888:4cb3ba38",
     ],
-    ["the horizontal limit", { yaw: -0.3, pitch: 0.2, zoom: 1, zx: 1 }, "10896:50f8db9d"],
+    ["the horizontal limit", { yaw: -0.3, pitch: 0.2, zoom: 1, zx: 1 }, "10889:877dc5d1"],
     [
       "the horizontal limit, zoomed out",
       { yaw: 0.6, pitch: -0.1, zoom: 0.5, zx: 1 },
-      "10895:c76bfcd4",
+      "10888:232e7eb9",
     ],
   ];
 
@@ -2550,43 +2551,43 @@ const sceneSum = (s: Scene3d): string =>
 describe("the 3D scene and its drawing (build3D, lines 1226 to 1286, and render3D, lines 1287 to 1325)", () => {
   // what is tested, the scene (depth, reach, triangles, lines, digest), and the log of the canvas (entries, digest)
   const cases: [string, string, string][] = [
-    ["start", "10/44/1234/92 f1bb3341", "10896:dcb8c6c3"],
-    ["all beams ticked", "10/44/1346/96 e67270ff", "11828:abb38b12"],
+    ["start", "10/44/1233/92 f7bbbf0b", "10889:c40d1099"],
+    ["all beams ticked", "10/44/1345/96 31e6044b", "11821:4f42db65"],
     ["none ticked", "10/7/0/0 010c94de", "164:72f39c97"],
-    ["sv-SE", "10/44/1346/96 e67270ff", "11828:2a1d9d1c"],
+    ["sv-SE", "10/44/1345/96 31e6044b", "11821:f6a124f7"],
     ["deep water, 60 m", "60/44/520/85 16961a2a", "5121:e762b46d"],
-    ["shallow water, 0.4 m", "0.4/33/1346/96 938c9979", "11796:dad53dbf"],
-    ["side range under the depth", "10/33/1218/92 592af8b7", "10736:52e478c5"],
+    ["shallow water, 0.4 m", "0.4/33/1345/96 bd6f5951", "11789:f88a56a6"],
+    ["side range under the depth", "10/33/1217/92 1bf48bb5", "10729:afbb2e76"],
     [
       "side range 100, over the 91 m of the first frequency",
-      "10/100/1346/96 540a9fd7",
-      "11828:2393e233",
+      "10/100/1345/96 be29e8a3",
+      "11821:25084420",
     ],
-    ["live range under the depth", "10/44/808/91 a60eb64c", "7479:1d7a0dd2"],
-    ["live range equal to the depth", "10/44/968/93 c88cfa18", "8777:3f1c5979"],
-    ["live range the next number over the depth", "10/44/1052/94 66ef0c91", "9458:f898b8b2"],
-    ["live fan 180 degrees", "10/44/1346/96 77ec2624", "11828:4e5a5f11"],
-    ["live fan just under 180 degrees", "10/44/1346/96 c60c9069", "11828:69ed0cdf"],
-    ["live fan 179.99999994, just short of a ring", "10/44/1346/96 d04463f8", "11828:61eb7547"],
-    ["live fan 179.99999995, just a ring", "10/44/1346/96 1808140e", "11828:1d59fe8c"],
-    ["live fan 20 degrees, slice 5", "10/44/1338/96 be3fa855", "11764:b799a279"],
-    ["live mounts at the edges", "10/44/1198/94 6037d8a3", "10626:ae08f860"],
-    ["live mounts steep", "10/44/1346/96 8aeeefc5", "11828:5239dbaf"],
-    ["live slice 89.9 degrees", "10/44/1346/96 ce5b0286", "11828:25a6a4ef"],
-    ["side fans aimed at the center line", "10/44/1346/96 b0c93485", "11828:bb0253be"],
-    ["side upper edge 0", "10/44/1346/96 f0c10ed1", "11828:88ad55dd"],
-    ["only the side fans", "10/44/224/8 3252910e", "2060:9622ec7c"],
-    ["Humminbird pair, MEGA Live 2", "10/44/1337/100 078557ec", "11792:9874b748"],
-    ["Humminbird single, one live transducer", "10/44/1337/100 da4a2e8a", "11792:e2f3b106"],
-    ["other preset", "10/44/1121/94 2e09767f", "10010:ddc3e05c"],
-    ["Lowrance nose cone, two live transducers", "10/44/1346/96 c02c8e76", "11828:8f427601"],
-    ["sonars not equipped", "10/33/914/84 38382abd", "8232:c12a9e2b"],
-    ["only live sonar equipped", "10/33/774/10 f1622676", "6446:fd0325be"],
+    ["live range under the depth", "10/44/808/91 d5874e90", "7479:2341885f"],
+    ["live range equal to the depth", "10/44/968/93 c533a4a4", "8777:4356cbee"],
+    ["live range the next number over the depth", "10/44/1052/94 f77a6111", "9458:0380e95a"],
+    ["live fan 180 degrees", "10/44/1345/96 0e832a68", "11821:b132a569"],
+    ["live fan just under 180 degrees", "10/44/1345/96 17b5afcb", "11821:695f5724"],
+    ["live fan 179.99999994, just short of a ring", "10/44/1345/96 85e22d90", "11821:35293755"],
+    ["live fan 179.99999995, just a ring", "10/44/1345/96 7690534d", "11821:61031515"],
+    ["live fan 20 degrees, slice 5", "10/44/1338/96 d315740b", "11764:d1a0b78b"],
+    ["live mounts at the edges", "10/44/1198/94 00e00f6f", "10626:1f5c0ad2"],
+    ["live mounts steep", "10/44/1345/96 d77577a3", "11821:83fc628f"],
+    ["live slice 89.9 degrees", "10/44/1345/96 f43951d9", "11821:02a95007"],
+    ["side fans aimed at the center line", "10/44/1345/96 4f6246f5", "11821:fdcd8731"],
+    ["side upper edge 0", "10/44/1345/96 b4501377", "11821:40318680"],
+    ["only the side fans", "10/44/224/8 f73603d0", "2060:3d1b1221"],
+    ["Humminbird pair, MEGA Live 2", "10/44/1336/100 4ca055ea", "11785:946dde63"],
+    ["Humminbird single, one live transducer", "10/44/1336/100 2b3e2272", "11785:80f4a508"],
+    ["other preset", "10/44/1120/94 26e414c9", "10003:5945ac37"],
+    ["Lowrance nose cone, two live transducers", "10/44/1345/96 6741478b", "11821:a2087515"],
+    ["sonars not equipped", "10/33/913/84 24d4e1b5", "8225:54541565"],
+    ["only live sonar equipped", "10/33/773/10 1820f456", "6439:45cefd1a"],
     ["depth 305 m, the 2D cones' own limit", "305/202/140/74 8cf9a944", "2110:75cd9847"],
     ["depth the next number over 305", "305.00000000000006/202/72/72 3d46a58c", "1548:9dfec70a"],
     ["depth the next number under 305", "304.99999999999994/202/140/74 e6dd1910", "2110:5a583b89"],
     ["a depth under the cones' limit, 304", "304/201/140/74 66944cc4", "2110:73ea564d"],
-    ["depth equal to a down fan's limit, 46", "46/100/664/88 3914cc2a", "6300:a0215858"],
+    ["depth equal to a down fan's limit, 46", "46/100/664/88 b57d5f70", "6300:d410942c"],
   ];
 
   it.each(cases)("%s", (name, scene, log) => {
@@ -2601,24 +2602,24 @@ describe("the 3D scene and its drawing (build3D, lines 1226 to 1286, and render3
 
   // what is tested, the state of the view, the log of the canvas (entries, digest)
   const states: [string, string, Partial<Scene3dState>, string][] = [
-    ["start", "the page's start", {}, "10896:dcb8c6c3"],
-    ["start", "from behind", { yaw: 0, pitch: 0 }, "10896:abda08f3"],
-    ["start", "from above", { yaw: 0, pitch: Math.PI / 2 }, "10896:1ed808aa"],
-    ["start", "from the side", { yaw: Math.PI / 2, pitch: 0 }, "10895:0ad87f50"],
-    ["start", "depth stretched 2", { zx: 2 }, "10896:5b859d23"],
-    ["start", "depth stretched 4", { zx: 4 }, "10896:4e61a501"],
-    ["start", "zoomed in to the limit", { zoom: 6 }, "10896:b71b0f04"],
-    ["start", "zoomed out to the limit", { zoom: 0.3 }, "10895:9152f5ca"],
-    ["start", "turned and tilted past a limit", { yaw: 1.3, pitch: -0.2 }, "10895:5a2f0695"],
-    ["sv-SE", "the page's start", {}, "11828:2a1d9d1c"],
-    ["sv-SE", "from behind", { yaw: 0, pitch: 0 }, "11828:d87a09fc"],
-    ["sv-SE", "from above", { yaw: 0, pitch: Math.PI / 2 }, "11828:4c3f84e9"],
-    ["sv-SE", "from the side", { yaw: Math.PI / 2, pitch: 0 }, "11827:c8bf91b6"],
-    ["sv-SE", "depth stretched 2", { zx: 2 }, "11828:6996037a"],
-    ["sv-SE", "depth stretched 4", { zx: 4 }, "11828:c7a16d5c"],
-    ["sv-SE", "zoomed in to the limit", { zoom: 6 }, "11828:fa440858"],
-    ["sv-SE", "zoomed out to the limit", { zoom: 0.3 }, "11827:7a2e988b"],
-    ["sv-SE", "turned and tilted past a limit", { yaw: 1.3, pitch: -0.2 }, "11827:adf66c18"],
+    ["start", "the page's start", {}, "10889:c40d1099"],
+    ["start", "from behind", { yaw: 0, pitch: 0 }, "10889:6f7709b0"],
+    ["start", "from above", { yaw: 0, pitch: Math.PI / 2 }, "10889:57f83516"],
+    ["start", "from the side", { yaw: Math.PI / 2, pitch: 0 }, "10888:d0ab953f"],
+    ["start", "depth stretched 2", { zx: 2 }, "10889:bab9acb9"],
+    ["start", "depth stretched 4", { zx: 4 }, "10889:0c05fe3f"],
+    ["start", "zoomed in to the limit", { zoom: 6 }, "10889:468d2318"],
+    ["start", "zoomed out to the limit", { zoom: 0.3 }, "10888:bf352b10"],
+    ["start", "turned and tilted past a limit", { yaw: 1.3, pitch: -0.2 }, "10888:6c163ad9"],
+    ["sv-SE", "the page's start", {}, "11821:f6a124f7"],
+    ["sv-SE", "from behind", { yaw: 0, pitch: 0 }, "11821:97be0e32"],
+    ["sv-SE", "from above", { yaw: 0, pitch: Math.PI / 2 }, "11821:e612c32a"],
+    ["sv-SE", "from the side", { yaw: Math.PI / 2, pitch: 0 }, "11820:1b7ae23b"],
+    ["sv-SE", "depth stretched 2", { zx: 2 }, "11821:8929aeef"],
+    ["sv-SE", "depth stretched 4", { zx: 4 }, "11821:c294429c"],
+    ["sv-SE", "zoomed in to the limit", { zoom: 6 }, "11821:3ade9d38"],
+    ["sv-SE", "zoomed out to the limit", { zoom: 0.3 }, "11820:a106f740"],
+    ["sv-SE", "turned and tilted past a limit", { yaw: 1.3, pitch: -0.2 }, "11820:4a9c114a"],
     ["none ticked", "the page's start", {}, "164:72f39c97"],
     ["none ticked", "from behind", { yaw: 0, pitch: 0 }, "164:acb3097e"],
     ["none ticked", "from above", { yaw: 0, pitch: Math.PI / 2 }, "164:1390f19a"],
@@ -2628,43 +2629,43 @@ describe("the 3D scene and its drawing (build3D, lines 1226 to 1286, and render3
     ["none ticked", "zoomed in to the limit", { zoom: 6 }, "164:2077a91b"],
     ["none ticked", "zoomed out to the limit", { zoom: 0.3 }, "163:3203bd8e"],
     ["none ticked", "turned and tilted past a limit", { yaw: 1.3, pitch: -0.2 }, "164:5396df5b"],
-    ["shallow water, 0.4 m", "the page's start", {}, "11796:dad53dbf"],
-    ["shallow water, 0.4 m", "from behind", { yaw: 0, pitch: 0 }, "11795:181438f7"],
-    ["shallow water, 0.4 m", "from above", { yaw: 0, pitch: Math.PI / 2 }, "11796:18af12cd"],
-    ["shallow water, 0.4 m", "from the side", { yaw: Math.PI / 2, pitch: 0 }, "11794:fd62d67a"],
-    ["shallow water, 0.4 m", "depth stretched 2", { zx: 2 }, "11796:e9b0e59c"],
-    ["shallow water, 0.4 m", "depth stretched 4", { zx: 4 }, "11796:dfe1d019"],
-    ["shallow water, 0.4 m", "zoomed in to the limit", { zoom: 6 }, "11796:5e5e72a9"],
-    ["shallow water, 0.4 m", "zoomed out to the limit", { zoom: 0.3 }, "11795:ac5714fc"],
+    ["shallow water, 0.4 m", "the page's start", {}, "11789:f88a56a6"],
+    ["shallow water, 0.4 m", "from behind", { yaw: 0, pitch: 0 }, "11788:cc3d1e8c"],
+    ["shallow water, 0.4 m", "from above", { yaw: 0, pitch: Math.PI / 2 }, "11789:7bb578ee"],
+    ["shallow water, 0.4 m", "from the side", { yaw: Math.PI / 2, pitch: 0 }, "11787:33a6711f"],
+    ["shallow water, 0.4 m", "depth stretched 2", { zx: 2 }, "11789:5278e570"],
+    ["shallow water, 0.4 m", "depth stretched 4", { zx: 4 }, "11789:8c8252bc"],
+    ["shallow water, 0.4 m", "zoomed in to the limit", { zoom: 6 }, "11789:894c9b14"],
+    ["shallow water, 0.4 m", "zoomed out to the limit", { zoom: 0.3 }, "11788:22f0f0d2"],
     [
       "shallow water, 0.4 m",
       "turned and tilted past a limit",
       { yaw: 1.3, pitch: -0.2 },
-      "11796:235e51c0",
+      "11789:dbd3a3fc",
     ],
-    ["Humminbird pair, MEGA Live 2", "the page's start", {}, "11792:9874b748"],
-    ["Humminbird pair, MEGA Live 2", "from behind", { yaw: 0, pitch: 0 }, "11792:898f9d45"],
+    ["Humminbird pair, MEGA Live 2", "the page's start", {}, "11785:946dde63"],
+    ["Humminbird pair, MEGA Live 2", "from behind", { yaw: 0, pitch: 0 }, "11785:801c0022"],
     [
       "Humminbird pair, MEGA Live 2",
       "from above",
       { yaw: 0, pitch: Math.PI / 2 },
-      "11792:4eb95e4f",
+      "11785:55849273",
     ],
     [
       "Humminbird pair, MEGA Live 2",
       "from the side",
       { yaw: Math.PI / 2, pitch: 0 },
-      "11791:f8235370",
+      "11784:cee862d4",
     ],
-    ["Humminbird pair, MEGA Live 2", "depth stretched 2", { zx: 2 }, "11792:3a08081f"],
-    ["Humminbird pair, MEGA Live 2", "depth stretched 4", { zx: 4 }, "11792:9063b169"],
-    ["Humminbird pair, MEGA Live 2", "zoomed in to the limit", { zoom: 6 }, "11792:c5169356"],
-    ["Humminbird pair, MEGA Live 2", "zoomed out to the limit", { zoom: 0.3 }, "11791:27653abe"],
+    ["Humminbird pair, MEGA Live 2", "depth stretched 2", { zx: 2 }, "11785:5cf19717"],
+    ["Humminbird pair, MEGA Live 2", "depth stretched 4", { zx: 4 }, "11785:251f2bd7"],
+    ["Humminbird pair, MEGA Live 2", "zoomed in to the limit", { zoom: 6 }, "11785:b465e87f"],
+    ["Humminbird pair, MEGA Live 2", "zoomed out to the limit", { zoom: 0.3 }, "11784:6362b9aa"],
     [
       "Humminbird pair, MEGA Live 2",
       "turned and tilted past a limit",
       { yaw: 1.3, pitch: -0.2 },
-      "11791:6633faa2",
+      "11784:acf539e4",
     ],
   ];
 
@@ -2727,8 +2728,82 @@ describe("the 3D scene and its drawing (build3D, lines 1226 to 1286, and render3
     const first = logSum(paint({}));
     expect(logSum(paint({ yaw: 1, pitch: 1, zoom: 2, zx: 4 }))).not.toBe(first);
     expect(logSum(paint({}))).toBe(first);
-    expect(first).toBe("10896:dcb8c6c3");
+    expect(first).toBe("10889:c40d1099");
   });
+
+  // The footprint of a live sonar's fan on the bottom is narrow in the middle and wide at the
+  // ends, a polygon that bends inward, and the side fans' footprints bend inward too. A footprint's
+  // fill is its outline and nothing else: the triangles that fill it add up to its area and lie
+  // inside it, with no part of the fill outside the outline (a darker strip along one side of the
+  // hourglass, reported by Adam, 2026-11-28).
+  type Ring = readonly (readonly number[])[];
+  const area = (pts: Ring): number => {
+    let sum = 0;
+    for (let i = 0; i < pts.length; i++) {
+      const a = pts[i] as readonly number[];
+      const b = pts[(i + 1) % pts.length] as readonly number[];
+      sum += (a[0] as number) * (b[1] as number) - (b[0] as number) * (a[1] as number);
+    }
+    return Math.abs(sum) / 2;
+  };
+  const inside = (x: number, y: number, pts: Ring): boolean => {
+    let hit = false;
+    for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+      const a = pts[i] as readonly number[];
+      const b = pts[j] as readonly number[];
+      if (
+        (a[1] as number) > y !== (b[1] as number) > y &&
+        x <
+          (((b[0] as number) - (a[0] as number)) * (y - (a[1] as number))) /
+            ((b[1] as number) - (a[1] as number)) +
+            (a[0] as number)
+      ) {
+        hit = !hit;
+      }
+    }
+    return hit;
+  };
+  const outlinesOf = (scene: Scene3d): Ring[] =>
+    scene.lines.filter((l) => l.w === 2 && l.d === "").map((l) => l.p.slice(0, -1));
+
+  it.each(BEAM_IDS.map((id) => [id]))(
+    "fills the footprint of %s alone exactly, with nothing outside its outline",
+    (id) => {
+      const scene = buildScene(inputOf({ name: `${id} alone`, behind: only(id) }));
+      const outlines = outlinesOf(scene);
+      const foot = scene.tris.filter((t) => t.foot);
+      expect(foot.length > 0).toBe(outlines.length > 0);
+      expect(foot.reduce((sum, t) => sum + area(t.p), 0)).toBeCloseTo(
+        outlines.reduce((sum, o) => sum + area(o), 0),
+        6,
+      );
+      for (const t of foot) {
+        const cx = (t.p[0][0] + t.p[1][0] + t.p[2][0]) / 3;
+        const cy = (t.p[0][1] + t.p[1][1] + t.p[2][1]) / 3;
+        expect(outlines.some((o) => inside(cx, cy, o))).toBe(true);
+      }
+    },
+  );
+
+  it.each(cases.map(([name]) => [name]))(
+    "%s: the exact fill changes the footprints' triangles and nothing else in the scene",
+    (name) => {
+      const input = inputOf(caseNamed(name));
+      const exact = buildScene(input);
+      const earlier = buildScene(input, fanTriangles);
+      expect(exact.H).toBe(earlier.H);
+      expect(exact.ext).toBe(earlier.ext);
+      expect(exact.lines).toEqual(earlier.lines);
+      expect(exact.tris.filter((t) => !t.foot)).toEqual(earlier.tris.filter((t) => !t.foot));
+      const outlines = outlinesOf(exact);
+      for (const t of exact.tris.filter((t) => t.foot)) {
+        const cx = (t.p[0][0] + t.p[1][0] + t.p[2][0]) / 3;
+        const cy = (t.p[0][1] + t.p[1][1] + t.p[2][1]) / 3;
+        // A footprint of no size (a cone at its limit) has nothing to lie inside.
+        if (area(t.p) > 0) expect(outlines.some((o) => inside(cx, cy, o))).toBe(true);
+      }
+    },
+  );
 
   it("draws nothing before a scene is built, and leaves the canvas as it was", () => {
     const input = inputOf(caseNamed("start"));
@@ -3305,7 +3380,8 @@ describe("against the recorded page: the 3D view", () => {
     it("draws the 3D view as the earlier page drew it, entry for entry or by its digest", () => {
       const input = inputOfRecording(scenario);
       const { surface, log } = recordingSurface(canvas.width, canvas.height);
-      paintScene(surface, buildScene(input), input);
+      // The earlier page fills a footprint from its first corner (`fanTriangles`); the page now fills it exactly, so this test asks for the earlier fill and proves that nothing else in the drawing has changed.
+      paintScene(surface, buildScene(input, fanTriangles), input);
       expect([canvas.width, canvas.height]).toEqual([B3D.width, B3D.height]);
       expect(canvas.passes.length).toBeGreaterThan(0);
       for (const pass of canvas.passes) {

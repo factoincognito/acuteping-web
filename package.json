@@ -1,6 +1,6 @@
 {
   "name": "acuteping",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Sheds lights on the mytsics around sonars and it's cone geometry",
   "scripts": {
     "dev": "vite",

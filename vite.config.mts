@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { defineConfig, type Plugin } from "vite";
 import { viteSingleFile } from "vite-plugin-singlefile";
 
@@ -26,6 +27,29 @@ function plainScriptAtEndOfBody(): Plugin {
   };
 }
 
+/**
+ * Writes the version of `package.json` where `index.html` has `__VERSION__`, so
+ * that the footer shows the version of the release the page was built from and
+ * the number is written in one place only. A page with no `__VERSION__`, or a
+ * `package.json` with no version, stops the build.
+ */
+function versionInPage(): Plugin {
+  const { version } = JSON.parse(readFileSync(new URL("./package.json", import.meta.url), "utf8"));
+  if (typeof version !== "string" || !/^\d+\.\d+\.\d+$/.test(version)) {
+    throw new Error("package.json has no version of the form 1.2.3");
+  }
+  return {
+    name: "version-in-page",
+    transformIndexHtml: {
+      order: "pre",
+      handler(html) {
+        if (!html.includes("__VERSION__")) throw new Error("the page has no __VERSION__ to fill");
+        return html.replaceAll("__VERSION__", version);
+      },
+    },
+  };
+}
+
 export default defineConfig({
   build: {
     // The style of `index.html` is kept as it is written. A minifier rewrites
@@ -40,5 +64,5 @@ export default defineConfig({
     // none of its names is the window's; strict, as the modules are written.
     rollupOptions: { output: { format: "iife", banner: '"use strict";' } },
   },
-  plugins: [plainScriptAtEndOfBody(), viteSingleFile()],
+  plugins: [versionInPage(), plainScriptAtEndOfBody(), viteSingleFile()],
 });

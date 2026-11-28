@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import {
   expect,
   gotoAllOpen,
@@ -29,6 +30,18 @@ test("has the title of the project, the heading of the calculator and the licenc
   expect(await page.evaluate(() => document.body.firstElementChild?.className)).toBe("wrap");
   expect(await page.evaluate(() => document.body.lastElementChild?.localName)).toBe("script");
   expect(await page.evaluate(() => getComputedStyle(document.body).margin)).toBe("0px");
+});
+
+test("shows the version of package.json in its footer", async ({ page }) => {
+  const { version } = JSON.parse(readFileSync("package.json", "utf8")) as { version: string };
+  expect(version).toMatch(/^\d+\.\d+\.\d+$/);
+  await page.goto("/");
+  const line = page.locator("footer .ver");
+  await expect(line).toHaveCount(1);
+  await expect(line).toBeVisible();
+  await expect(line).toHaveText(`Version ${version}.`);
+  // The line holds no link: the footer's links are the ones the next test counts.
+  await expect(line.locator("a")).toHaveCount(0);
 });
 
 test("links its footer to the public repository and to the licence text and the changelog in it, and to nothing else", async ({

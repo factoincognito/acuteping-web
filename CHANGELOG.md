@@ -3,6 +3,10 @@
 What a visitor to the acuteping page can see changed in each release of this
 repository, newest first.
 
+## 0.2.2 - 2026-11-28
+
+- The footer of the page now shows the version number of the release.
+
 ## 0.2.1 - 2026-11-28
 
 - The 3D beam view now fills the footprint on the bottom of the side imaging

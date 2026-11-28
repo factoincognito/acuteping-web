@@ -32,6 +32,8 @@ Release check, 0.2.0 (2026-11-27): the dependencies are those published with 0.1
 
 Release check, 0.2.1 (2026-11-28): the dependencies are those of 0.2.0. `package.json` and `package-lock.json` differ from the files of the tag `v0.2.0` of `acuteping-web` only in the `version` of the root package (compared with `jq` after deleting that field).
 
+Release check, 0.2.2 (2026-11-28): the dependencies are those of 0.2.0. `package.json` and `package-lock.json` differ from the files of the tag `v0.2.0` of `acuteping-web` only in the `version` of the root package (compared with `jq` after deleting that field).
+
 Not covered yet: the packages that the actions themselves bundle in their `dist/` folders, the apt packages that `--with-deps` installs on the runner, the transitive npm dependencies, and the licences marked "Not checked" above.
 
 Mode is one of: depend, copy, clean room (with a link to its record in `docs/provenance/`).
